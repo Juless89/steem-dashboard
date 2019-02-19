@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # apps
     'pages.apps.PagesConfig',
+    'api.apps.ApiConfig',
 
     # external
     'rest_framework',

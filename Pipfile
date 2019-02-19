@@ -8,14 +8,13 @@ verify_ssl = true
 [packages]
 django = "==2.1"
 djangorestframework = "==3.9.1"
-pylint = "*"
-gunicorn = "*"
-whitenoise = "*"
-markdown = "*"
-django-filter = "*"
-mysqlclient = "*"
-mysql-python = "*"
-mysql-connector-python = "*"
+pylint = "==2.2.2"
+gunicorn = "==19.9.0"
+whitenoise = "==4.1.2"
+markdown = "==3.0.1"
+django-filter = "==2.1.0"
+mysql-connector-python = "==8.0.15"
+beem = "==0.20.18"
 
 [requires]
 python_version = "3.7"
