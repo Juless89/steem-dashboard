@@ -13,6 +13,9 @@ gunicorn = "*"
 whitenoise = "*"
 markdown = "*"
 django-filter = "*"
+mysqlclient = "*"
+mysql-python = "*"
+mysql-connector-python = "*"
 
 [requires]
 python_version = "3.7"
