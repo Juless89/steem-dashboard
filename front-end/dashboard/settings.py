@@ -86,13 +86,11 @@ WSGI_APPLICATION = 'dashboard.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'mysql.connector.django',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': config.get('client', 'database'),
         'USER': config.get('client', 'user'),
         'PASSWORD': config.get('client', 'password'),
-        'OPTIONS': {
-            'autocommit': True,
-        },
+        'HOST': 'localhost',
     }
 }
 

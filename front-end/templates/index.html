@@ -109,7 +109,26 @@
         </div>
       </div>
 
-      <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
+      <canvas id="chart" width="400" height="200"></canvas>
+      <script>
+        var endpoint = '/api/votes/1h'
+
+        $(document).ready(function(){
+            $.ajax({
+              method: "GET",
+              url: endpoint,
+              success: function(data){
+                console.log(data);
+                plot_graph(data);
+              },
+              error: function(error_data){
+                console.log(error_data)
+              }
+            });   
+          });
+
+
+      </script>
 
       <h2>Section title</h2>
       <div class="table-responsive">
