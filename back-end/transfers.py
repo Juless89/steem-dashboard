@@ -59,11 +59,11 @@ class Transfers(threading.Thread):
                     self.lock.acquire()
                     transfers = self.storage[:]
                 finally:
+                    self.storage.clear()
                     self.lock.release()
 
                     for transfer in transfers:
                         self.process_transfer(transfer)
-                    self.storage.clear()
 
             else:
                 time.sleep(0.1)

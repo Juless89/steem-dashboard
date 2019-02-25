@@ -58,11 +58,12 @@ class Votes(threading.Thread):
                     self.lock.acquire()
                     votes = self.storage[:]
                 finally:
+                    self.storage.clear()
                     self.lock.release()
 
                     for vote in votes:
                         self.process_vote(vote)
-                    self.storage.clear()
+                    
 
             else:
                 time.sleep(0.1)

@@ -58,11 +58,11 @@ class Claim_rewards(threading.Thread):
                     self.lock.acquire()
                     claim_rewards = self.storage[:]
                 finally:
+                    self.storage.clear()
                     self.lock.release()
 
                     for claim_reward in claim_rewards:
                         self.process_claim_reward(claim_reward)
-                    self.storage.clear()
 
             else:
                 time.sleep(0.1)
