@@ -23,7 +23,7 @@ class Node(threading.Thread):
 
             timestamp = datetime.strftime(block.time(), '%Y-%m-%dT%H:%M:%S')
             block_num = block.block_num
-            # print(block_num, timestamp)
+            print(block_num, timestamp)
 
             try:
                 self.lock.acquire()

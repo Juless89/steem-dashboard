@@ -45,6 +45,12 @@ class Database():
             VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
         self.buffer.append((sender, receiver, amount, precision, nai, timestamp))
 
+    def add_claim_reward(self, account, reward_steem, reward_sbd, reward_vests, timestamp):
+        self.query = (
+            """INSERT INTO `api_claim_rewards` (`id`, `account`, `reward_steem` , `reward_sbd` , `reward_vests` , `timestamp`)
+            VALUES (NULL, %s, %s, %s, %s, %s)""")
+        self.buffer.append((account, reward_steem, reward_sbd, reward_vests, timestamp))
+
     def get_block(self, num):
         query = (f"SELECT `*` FROM `api_blocks` WHERE `number` = '{num}'")
 
@@ -71,6 +77,7 @@ class Database():
     # Execute all stored sql queries at once
     def dump(self, table):
         self.post_data(self.query, table, True)
+        self.buffer = []
 
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
@@ -84,13 +91,13 @@ class Database():
             # Lock table
             self.cur.execute(f"LOCK TABLES {table} WRITE;")
 
-            # Release table
+            # single or multi statement
             if multi == False:
                 self.cur.execute(query)
             else:
-                print(query, self.buffer)
                 self.cur.executemany(query, self.buffer)
 
+            # Release table
             self.cur.execute(f"UNLOCK TABLES;")                
 
             # Commite changes made to the db
@@ -150,8 +157,6 @@ class Database():
         # sql query used to insert data into the mysql database
         query = f"INSERT INTO `{table}` (`count`, `timestamp`)" \
                 " VALUES ('{}', '{}');".format(amount ,timestamp)
-
-        print(query)
 
         try:
             self.connect_to_db()

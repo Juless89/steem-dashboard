@@ -43,3 +43,22 @@ class transfers(models.Model):
     precision = models.FloatField()
     nai = models.TextField()
     timestamp = models.DateTimeField() 
+
+class claim_rewards_count_minute(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class claim_rewards_count_hour(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class claim_rewards_count_day(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class claim_rewards(models.Model):
+    account = models.TextField()
+    reward_steem = models.TextField()
+    reward_sbd = models.TextField()
+    reward_vests = models.TextField()
+    timestamp = models.DateTimeField() 
