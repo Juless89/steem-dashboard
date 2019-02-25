@@ -56,10 +56,13 @@ class Transfers(threading.Thread):
             if len(self.storage) > 0:
                 try:
                     self.lock.acquire()
-                    for transfer in self.storage:
-                        self.process_transfer(transfer)
-                    self.storage.clear()
+                    transfers = self.storage[:]
                 finally:
                     self.lock.release()
+
+                    for transfer in transfers:
+                        self.process_transfer(transfer)
+                    self.storage.clear()
+
             else:
                 time.sleep(0.1)
