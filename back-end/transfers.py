@@ -5,7 +5,7 @@ from database import Database
 from datetime import datetime
 from counter import Counter
 
-class Votes(threading.Thread):
+class Transfers(threading.Thread):
     def __init__(self, storage, lock):
         threading.Thread.__init__(self)
         self.storage = storage
@@ -18,15 +18,15 @@ class Votes(threading.Thread):
 
         self.db = Database()
         self.counter = Counter(
-            minute="api_votes_count_minute",
-            hour="api_votes_count_hour",
-            day="api_votes_count_day",
+            minute="api_transfers_count_minute",
+            hour="api_transfers_count_hour",
+            day="api_transfers_count_day",
         )
 
-    def process_vote(self, vote):
-        if vote['type'] == "header":
-            self.timestamp = datetime.strptime(vote['timestamp'], '%Y-%m-%dT%H:%M:%S')
-            self.block = vote['block_num']
+    def process_transfer(self, transfer):
+        if transfer['type'] == "header":
+            self.timestamp = datetime.strptime(transfer['timestamp'], '%Y-%m-%dT%H:%M:%S')
+            self.block = transfer['block_num']
 
             # Keep track of the date
             if self.timestamp.date != self.date:
@@ -39,11 +39,12 @@ class Votes(threading.Thread):
                 self.counter.dump_data()
                 self.minute = self.timestamp.minute
         else:
-            voter = vote['value']['voter']
-            author = vote['value']['author']
-            permlink = vote['value']['permlink']
-            weight = vote['value']['weight']
-            self.db.add_vote(voter, author, permlink, weight, self.timestamp)
+            sender = transfer['value']['from']
+            receiver = transfer['value']['to']
+            amount = transfer['value']['amount']['amount']
+            precision = transfer['value']['amount']['precision']
+            nai = transfer['value']['amount']['nai']
+            self.db.add_transfer(sender, receiver, amount, precision, nai, self.timestamp)
 
             # Allow for multiple resolutions
             hour = self.timestamp.hour
@@ -55,8 +56,8 @@ class Votes(threading.Thread):
             if len(self.storage) > 0:
                 try:
                     self.lock.acquire()
-                    for vote in self.storage:
-                        self.process_vote(vote)
+                    for transfer in self.storage:
+                        self.process_transfer(transfer)
                     self.storage.clear()
                 finally:
                     self.lock.release()

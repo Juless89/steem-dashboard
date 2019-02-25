@@ -33,6 +33,10 @@ class Database():
         query = (f"INSERT INTO `api_votes` (`id`, `voter`, `author` , `permlink` , `weight`, `value` , `timestamp`) VALUES (NULL, '{voter}', '{author}', '{permlink}', '{weight}', '{value}', '{timestamp}')")
         self.post_data(query, 'api_votes')
 
+    def add_transfer(self, sender, receiver, amount, precision, nai, timestamp):
+        query = (f"INSERT INTO `api_transfers` (`id`, `sender`, `receiver` , `amount` , `precision`, `nai` , `timestamp`) VALUES (NULL, '{sender}', '{receiver}', '{amount}', '{precision}', '{nai}', '{timestamp}')")
+        self.post_data(query, 'api_transfers')
+
     def get_block(self, num):
         query = (f"SELECT `*` FROM `api_blocks` WHERE `number` = '{num}'")
 

@@ -24,3 +24,22 @@ class votes(models.Model):
     value = models.FloatField(default=0)
     timestamp = models.DateTimeField()  
 
+class transfers_count_minute(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class transfers_count_hour(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class transfers_count_day(models.Model):
+    count = models.IntegerField()
+    timestamp = models.DateTimeField()
+
+class transfers(models.Model):
+    sender = models.TextField()
+    receiver = models.TextField()
+    amount = models.IntegerField()
+    precision = models.FloatField()
+    nai = models.TextField()
+    timestamp = models.DateTimeField() 

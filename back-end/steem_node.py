@@ -16,15 +16,14 @@ class Node(threading.Thread):
 
     def run(self):
         for block in self.blockchain.blocks(
-            start=30507320,
-            stop=30515320,
+            start=30515320,
             threading=True,
             thread_num=16,
         ):
 
             timestamp = datetime.strftime(block.time(), '%Y-%m-%dT%H:%M:%S')
             block_num = block.block_num
-            print(block_num, timestamp)
+            # print(block_num, timestamp)
 
             try:
                 self.lock.acquire()
@@ -34,15 +33,20 @@ class Node(threading.Thread):
                     "timestamp": timestamp,
                 }
                 for operation in block.operations:
+                    #print(operation['type'])
                     try:
+                        # if operation['type'] == 'transfer_operation':
+                            # print(operation)
                         if len(self.arrays[operation['type']]) == 0:
                             self.arrays[operation['type']].append(header)
                         self.arrays[operation['type']].append(operation)
+                       
                     except:
                         continue
 
             finally:
                 self.lock.release()
+                #print(self.arrays['claim_reward_balance_operation'])
 
             self.db.add_block(block.block_num, timestamp)
 
