@@ -12,6 +12,10 @@ class Database():
         self.cur = None
         self.debug = False
 
+        # Multi sql statements
+        self.buffer = []
+        self.query = None
+
     def connect_to_db(self):
         self.db = mysql.connector.connect(
             host="localhost",
@@ -30,12 +34,16 @@ class Database():
         self.post_data(query, 'api_blocks')
 
     def add_vote(self, voter, author, permlink, weight, timestamp, value=0):
-        query = (f"INSERT INTO `api_votes` (`id`, `voter`, `author` , `permlink` , `weight`, `value` , `timestamp`) VALUES (NULL, '{voter}', '{author}', '{permlink}', '{weight}', '{value}', '{timestamp}')")
-        self.post_data(query, 'api_votes')
+        self.query = (
+            """INSERT INTO `api_votes` (`id`, `voter`, `author` , `permlink` , `weight`, `value` , `timestamp`)
+            VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
+        self.buffer.append((voter, author, permlink, weight, value, timestamp))        
 
     def add_transfer(self, sender, receiver, amount, precision, nai, timestamp):
-        query = (f"INSERT INTO `api_transfers` (`id`, `sender`, `receiver` , `amount` , `precision`, `nai` , `timestamp`) VALUES (NULL, '{sender}', '{receiver}', '{amount}', '{precision}', '{nai}', '{timestamp}')")
-        self.post_data(query, 'api_transfers')
+        self.query = (
+            """INSERT INTO `api_transfers` (`id`, `sender`, `receiver` , `amount` , `precision`, `nai` , `timestamp`)
+            VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
+        self.buffer.append((sender, receiver, amount, precision, nai, timestamp))
 
     def get_block(self, num):
         query = (f"SELECT `*` FROM `api_blocks` WHERE `number` = '{num}'")
@@ -60,9 +68,13 @@ class Database():
 
         self.post_data(query, 'signals')
 
+    # Execute all stored sql queries at once
+    def dump(self, table):
+        self.post_data(self.query, table, True)
+
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
-    def post_data(self, query, table):
+    def post_data(self, query, table, multi=False):
         if self.debug:
             print(query)
 
@@ -71,10 +83,15 @@ class Database():
 
             # Lock table
             self.cur.execute(f"LOCK TABLES {table} WRITE;")
-            self.cur.execute(query)
 
             # Release table
-            self.cur.execute(f"UNLOCK TABLES;")
+            if multi == False:
+                self.cur.execute(query)
+            else:
+                print(query, self.buffer)
+                self.cur.executemany(query, self.buffer)
+
+            self.cur.execute(f"UNLOCK TABLES;")                
 
             # Commite changes made to the db
             self.db.commit()

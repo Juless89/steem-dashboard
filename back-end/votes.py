@@ -37,6 +37,7 @@ class Votes(threading.Thread):
             # and clear the buffers.
             if self.timestamp.minute != self.minute:
                 self.counter.dump_data()
+                self.db.dump('api_votes')
                 self.minute = self.timestamp.minute
         else:
             voter = vote['value']['voter']

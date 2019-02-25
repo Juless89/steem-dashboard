@@ -37,6 +37,7 @@ class Transfers(threading.Thread):
             # and clear the buffers.
             if self.timestamp.minute != self.minute:
                 self.counter.dump_data()
+                self.db.dump('api_transfers')
                 self.minute = self.timestamp.minute
         else:
             sender = transfer['value']['from']
