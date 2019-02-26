@@ -1,52 +1,63 @@
-from beem import Steem
-from beem.blockchain import Blockchain
 from database import Database
-from datetime import datetime
+from rpc_node import RPC_node
 
 import threading
+import time
+
 
 class Node(threading.Thread):
     def __init__(self, votes_arr, lock):
         threading.Thread.__init__(self)
         self.lock = lock
         self.arrays = votes_arr
-        self.stm = Steem('https://rpc.steemviz.com')
-        self.blockchain = Blockchain(self.stm)
+        self.blocks_queue = []
+        self.blocks_queue_lock = threading.Lock()
+        # self.stm = Steem('https://rpc.steemviz.com')
+        # print('test')
+        # self.blockchain =
+        # print('test2')
         self.db = Database()
 
     def run(self):
-        for block in self.blockchain.blocks(
+        rpc = RPC_node(
             start=30515320,
-            threading=True,
-            thread_num=16,
-        ):
+            amount_of_threads=8,
+            blocks_queue=self.blocks_queue,
+            blocks_queue_lock=self.blocks_queue_lock,
+        )
 
-            timestamp = datetime.strftime(block.time(), '%Y-%m-%dT%H:%M:%S')
-            block_num = block.block_num
-            print(block_num, timestamp)
+        while True:
+            # print(len(self.blocks_queue))
+            if len(self.blocks_queue) > 0:
 
-            try:
-                self.lock.acquire()
-                header = {
-                    "type": "header",
-                    "block_num": block_num,
-                    "timestamp": timestamp,
-                }
-                for operation in block.operations:
-                    #print(operation['type'])
-                    try:
-                        # if operation['type'] == 'transfer_operation':
-                            # print(operation)
-                        if len(self.arrays[operation['type']]) == 0:
-                            self.arrays[operation['type']].append(header)
-                        self.arrays[operation['type']].append(operation)
-                       
-                    except:
-                        continue
+                try:
+                    self.blocks_queue_lock.acquire()
 
-            finally:
-                self.lock.release()
-                #print(self.arrays['claim_reward_balance_operation'])
+                    while len(self.blocks_queue) > 0:
+                        block = self.blocks_queue.pop(0)
+                        timestamp = block['timestamp']
+                        block_num = block['block_num']
+                        print(block_num, timestamp, end='\r')
 
-            self.db.add_block(block.block_num, timestamp)
+                        try:
+                            self.lock.acquire()
+                            header = {
+                                "type": "header",
+                                "block_num": block_num,
+                                "timestamp": timestamp,
+                            }
+                            for transaction in block['transactions']:
+                                for operation in transaction['operations']:
+                                    try:
+                                        if len(self.arrays[operation['type']]) == 0:
+                                            self.arrays[operation['type']].append(header)
+                                        self.arrays[operation['type']].append(operation)
+                                    except:
+                                        continue
+                        finally:
+                            self.lock.release()
 
+                        self.db.add_block(block_num, timestamp)
+                finally:
+                    self.blocks_queue_lock.release()
+            time.sleep(0.05)

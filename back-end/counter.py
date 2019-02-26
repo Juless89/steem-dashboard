@@ -1,5 +1,6 @@
 from database import Database
 
+
 class Counter:
     def __init__(self, **kwargs):
         self.db = Database()
@@ -29,9 +30,9 @@ class Counter:
         self.insert_into_db(self.data_minute, self.table_minute)
         self.insert_into_db(self.data_hour, self.table_hour)
         self.insert_into_db(self.data_day, self.table_day)
-        self.data_hour = {}
-        self.data_minute = {}
-        self.data_day = {}
+        self.data_hour.clear()
+        self.data_minute.clear()
+        self.data_day.clear()
 
     # Loop through the data dict and insert each pair into the database
     def insert_into_db(self, data, table):

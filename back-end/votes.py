@@ -33,7 +33,7 @@ class Votes(threading.Thread):
                 self.date = self.timestamp.date()
                 self.counter.date = self.timestamp.date()
 
-            # For each hour of data processed upload the data into the database
+            # For each minute of data processed upload the data into the database
             # and clear the buffers.
             if self.timestamp.minute != self.minute:
                 self.counter.dump_data()
@@ -63,7 +63,5 @@ class Votes(threading.Thread):
 
                     for vote in votes:
                         self.process_vote(vote)
-                    
-
             else:
                 time.sleep(0.1)

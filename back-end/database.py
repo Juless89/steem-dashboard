@@ -1,5 +1,4 @@
 import mysql.connector
-from datetime import datetime
 import configparser
 
 config = configparser.ConfigParser()
@@ -37,7 +36,7 @@ class Database():
         self.query = (
             """INSERT INTO `api_votes` (`id`, `voter`, `author` , `permlink` , `weight`, `value` , `timestamp`)
             VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
-        self.buffer.append((voter, author, permlink, weight, value, timestamp))        
+        self.buffer.append((voter, author, permlink, weight, value, timestamp))
 
     def add_transfer(self, sender, receiver, amount, precision, nai, timestamp):
         self.query = (
@@ -77,7 +76,7 @@ class Database():
     # Execute all stored sql queries at once
     def dump(self, table):
         self.post_data(self.query, table, True)
-        self.buffer = []
+        self.buffer.clear()
 
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
@@ -98,7 +97,7 @@ class Database():
                 self.cur.executemany(query, self.buffer)
 
             # Release table
-            self.cur.execute(f"UNLOCK TABLES;")                
+            self.cur.execute(f"UNLOCK TABLES;")
 
             # Commite changes made to the db
             self.db.commit()
