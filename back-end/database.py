@@ -1,4 +1,4 @@
-import mysql.connector
+import MySQLdb
 import configparser
 
 config = configparser.ConfigParser()
@@ -16,7 +16,7 @@ class Database():
         self.query = None
 
     def connect_to_db(self):
-        self.db = mysql.connector.connect(
+        self.db = MySQLdb.connect(
             host="localhost",
             user=config.get('client', 'user'),
             passwd=config.get('client', 'password'),
@@ -33,22 +33,16 @@ class Database():
         self.post_data(query, 'api_blocks')
 
     def add_vote(self, voter, author, permlink, weight, timestamp, value=0):
-        self.query = (
-            """INSERT INTO `api_votes` (`id`, `voter`, `author` , `permlink` , `weight`, `value` , `timestamp`)
-            VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
-        self.buffer.append((voter, author, permlink, weight, value, timestamp))
+        query = (f"INSERT INTO `api_votes` (`id`, `voter`, `author`, `permlink`, `weight`, `value`, `timestamp`) VALUES (NULL, '{voter}', '{author}', '{permlink}', '{weight}', '{value}', '{timestamp}')")
+        self.buffer.append(query)
 
     def add_transfer(self, sender, receiver, amount, precision, nai, timestamp):
-        self.query = (
-            """INSERT INTO `api_transfers` (`id`, `sender`, `receiver` , `amount` , `precision`, `nai` , `timestamp`)
-            VALUES (NULL, %s, %s, %s, %s, %s, %s)""")
-        self.buffer.append((sender, receiver, amount, precision, nai, timestamp))
+        query = (f"INSERT INTO `api_transfers` (`id`, `sender`, `receiver`, `amount`, `precision`, `nai`, `timestamp`) VALUES (NULL, '{sender}', '{receiver}', '{amount}', '{precision}', '{nai}', '{timestamp}')")
+        self.buffer.append(query)
 
     def add_claim_reward(self, account, reward_steem, reward_sbd, reward_vests, timestamp):
-        self.query = (
-            """INSERT INTO `api_claim_rewards` (`id`, `account`, `reward_steem` , `reward_sbd` , `reward_vests` , `timestamp`)
-            VALUES (NULL, %s, %s, %s, %s, %s)""")
-        self.buffer.append((account, reward_steem, reward_sbd, reward_vests, timestamp))
+        query = (f"INSERT INTO `api_claim_rewards` (`id`, `account`, `reward_steem`, `reward_sbd`, `reward_vests`, `timestamp`) VALUES (NULL, '{account}', '{reward_steem}', '{reward_sbd}', '{reward_vests}', '{timestamp}')")
+        self.buffer.append(query)
 
     def get_block(self, num):
         query = (f"SELECT `*` FROM `api_blocks` WHERE `number` = '{num}'")
@@ -65,7 +59,6 @@ class Database():
 
         return self.get_data(query)
 
-
     def update_signal(self, mail_id):
         query = (
             "UPDATE `signals` SET `processed` = 'yes' WHERE " +
@@ -75,8 +68,8 @@ class Database():
 
     # Execute all stored sql queries at once
     def dump(self, table):
-        self.post_data(self.query, table, True)
-        self.buffer.clear()
+        self.post_data(self.buffer, table, True)
+        self.buffer = []
 
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
@@ -91,10 +84,11 @@ class Database():
             self.cur.execute(f"LOCK TABLES {table} WRITE;")
 
             # single or multi statement
-            if multi == False:
+            if not multi:
                 self.cur.execute(query)
             else:
-                self.cur.executemany(query, self.buffer)
+                for qry in query:
+                    self.cur.execute(qry)
 
             # Release table
             self.cur.execute(f"UNLOCK TABLES;")
@@ -155,7 +149,7 @@ class Database():
     def insert_selection(self, timestamp, amount, table):
         # sql query used to insert data into the mysql database
         query = f"INSERT INTO `{table}` (`count`, `timestamp`)" \
-                " VALUES ('{}', '{}');".format(amount ,timestamp)
+                " VALUES ('{}', '{}');".format(amount, timestamp)
 
         try:
             self.connect_to_db()

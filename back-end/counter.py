@@ -26,6 +26,7 @@ class Counter:
         else:
             data[string] = 1
 
+    # Clear buffers and add to database
     def dump_data(self):
         self.insert_into_db(self.data_minute, self.table_minute)
         self.insert_into_db(self.data_hour, self.table_hour)
@@ -40,6 +41,7 @@ class Counter:
             string = f'{time}'
             self.db.insert_selection(string, amount, table)
 
+    # Account for multiple resolutions
     def set_resolutions(self, hour, minute):
         self.process_transaction(f'{hour}:{minute}:00', self.data_minute)
         self.process_transaction(f'{hour}:00:00', self.data_hour)
