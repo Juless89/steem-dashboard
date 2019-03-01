@@ -49,8 +49,9 @@ class Database():
 
         return self.get_data(query)
 
-    def get_votes(self):
-        query = f"SELECT `*` FROM `api_votes`"
+    def get_votes(self, start, end):
+        query = f"SELECT `voter`, `author` FROM `api_votes` WHERE `timestamp` BETWEEN '{start}' AND '{end}'"
+        print(query)
 
         return self.get_data(query)
 
@@ -66,10 +67,24 @@ class Database():
 
         self.post_data(query, 'signals')
 
+    def add_analyses(self, table, **kwargs):
+        head = f"INSERT INTO `{table}` (`id`"
+
+        rows = ''
+        values = ''
+        for row, value in kwargs.items():
+            rows += f', `{row}`'
+            values += f', "{value}"'
+
+        query = head + rows + ') VALUES (NULL' + values + ')'
+        self.post_data(query, table)
+
     # Execute all stored sql queries at once
     def dump(self, table):
         self.post_data(self.buffer, table, True)
-        self.buffer = []
+        #for query in self.buffer:
+            #self.post_data(query, table)
+        self.buffer.clear()
 
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
@@ -84,7 +99,7 @@ class Database():
             self.cur.execute(f"LOCK TABLES {table} WRITE;")
 
             # single or multi statement
-            if not multi:
+            if multi == False:
                 self.cur.execute(query)
             else:
                 for qry in query:

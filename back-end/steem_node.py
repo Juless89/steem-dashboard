@@ -58,8 +58,8 @@ class Node(threading.Thread):
     def run(self):
         # main block gathering thread
         rpc = RPC_node(
-            start=29059191, # 2019-01-01 0:00:00
-            amount_of_threads=32,
+            start=30773649, # 2019-01-01 0:00:00
+            amount_of_threads=2,
             blocks_queue=self.blocks_queue,
             blocks_queue_lock=self.blocks_queue_lock,
         )
@@ -70,9 +70,8 @@ class Node(threading.Thread):
             if len(self.blocks_queue) > 0:
                 try:
                     self.blocks_queue_lock.acquire()
-
                     # Take out all new blocks at once
-                    while len(self.blocks_queue) > 0:
+                    while (len(self.blocks_queue) > 0):
                         if self.check_buffers:
                             # remove from queue
                             block = self.blocks_queue.pop(0)
@@ -85,6 +84,9 @@ class Node(threading.Thread):
 
                             finally:
                                 self.lock.release()
+
+                        else:
+                            time.sleep(0.1)
 
                         # blocks per second counter
                         self.counter += 1

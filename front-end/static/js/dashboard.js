@@ -1,4 +1,4 @@
-function plot_graph (data){
+function plot_graph(data){
   var ctx = document.getElementById("chart").getContext('2d');
   var myChart = new Chart(ctx, {
       type: 'line',
@@ -42,11 +42,44 @@ function active_graph() {
     var pathname = window.location.pathname;
     id = '#' + pathname.substr(1)
     
-    console.log(pathname.substr(1));
-
-    
-    $("#votes").removeClass("nav-link active").addClass("nav-link")
     $(id).addClass("nav-link active");
 
 };
 
+function get_graph_data(endpoint) {
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+            console.log(data);
+            plot_graph(data);
+        },
+        error: function(error_data){
+            console.log(error_data)
+        }
+    });  
+};
+
+
+$(document).ready(function() {
+    var pathname = window.location.pathname;
+    api = 'api/' + pathname.substr(1)
+
+    $("#minute").click(function(){
+        get_graph_data(api + '/minute');
+        $('.btn-sm').removeClass("active")
+        $("#minute").addClass("active");
+    }); 
+    $("#hour").click(function(){
+        get_graph_data(api + '/hour');
+        $('.btn-sm').removeClass("active")
+        $("#hour").addClass("active");
+    }); 
+    $("#day").click(function(){
+        get_graph_data(api + '/day');
+        $('.btn-sm').removeClass("active")
+        $("#day").addClass("active");
+    }); 
+
+    
+});

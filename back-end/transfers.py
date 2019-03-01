@@ -42,10 +42,10 @@ class Transfers(threading.Thread):
 
             # For each minute of data processed upload the data into the
             # database and clear the buffers.
-            if self.timestamp.hour != self.hour:
+            if self.timestamp.minute != self.minute:
                 self.counter.dump_data()
                 self.db.dump('api_transfers')
-                self.hour = self.timestamp.hour
+                self.minute = self.timestamp.minute
         # deconstruct operation and prepare for storing
         else:
             sender = transfer['value']['from']

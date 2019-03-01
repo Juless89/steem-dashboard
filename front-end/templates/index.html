@@ -7,8 +7,7 @@
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Company name</a>
-  <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">SteemChain</a>
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
       <a class="nav-link" href="#">Sign out</a>
@@ -22,7 +21,7 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a id="votes" class="nav-link active" href="/votes">
+            <a id="votes" class="nav-link" href="/votes">
               <span data-feather="home"></span>
               Votes <span class="sr-only">(current)</span>
             </a>
@@ -83,13 +82,16 @@
         <h1 class="h2">Dashboard</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
+            <button id="minute" type="button" class="btn btn-sm btn-outline-secondary">Minute</button>
+            <button id="hour" type="button" class="btn btn-sm btn-outline-secondary">Hour</button>
+            <button id="day" type="button" class="btn btn-sm btn-outline-secondary active">Day</button>
           </div>
+          <!--
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
             This week
           </button>
+          -->
         </div>
       </div>
 

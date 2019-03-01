@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from .models import *
 from .serializers import *
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class VotesCountData(APIView):
     # Unused user authentication classes
@@ -15,16 +15,18 @@ class VotesCountData(APIView):
     # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
         delta = kwargs['delta']
+        end = datetime.now()
 
         if delta == 'minute':
             self.model = votes_count_minute
+            start = end - timedelta(hours=1)
         elif delta == 'hour':
             self.model = votes_count_hour
+            start = end - timedelta(days=14)
         elif delta == 'day':
             self.model = votes_count_day
+            start = end - timedelta(days=90)
 
-        start = '2019-01-01'
-        end = '2019-01-31'
         ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         serializer = VotesCount(ticker, many=True)
         x = []
@@ -50,16 +52,18 @@ class TransfersCountData(APIView):
     # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
         delta = kwargs['delta']
+        end = datetime.now()
 
         if delta == 'minute':
             self.model = transfers_count_minute
+            start = end - timedelta(hours=1)
         elif delta == 'hour':
             self.model = transfers_count_hour
+            start = end - timedelta(days=14)
         elif delta == 'day':
             self.model = transfers_count_day
+            start = end - timedelta(days=60)
 
-        start = '2019-01-01'
-        end = '2019-01-31'
         ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         serializer = TransfersCount(ticker, many=True)
         x = []
@@ -85,16 +89,18 @@ class ClaimRewardsCountData(APIView):
     # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
         delta = kwargs['delta']
+        end = datetime.now()
 
         if delta == 'minute':
             self.model = claim_rewards_count_minute
+            start = end - timedelta(hours=1)
         elif delta == 'hour':
             self.model = claim_rewards_count_hour
+            start = end - timedelta(days=7)
         elif delta == 'day':
             self.model = claim_rewards_count_day
+            start = end - timedelta(days=60)
 
-        start = '2019-01-01'
-        end = '2019-01-31'
         ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         serializer = TransfersCount(ticker, many=True)
         x = []
