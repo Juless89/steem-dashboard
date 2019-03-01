@@ -117,3 +117,19 @@ class ClaimRewardsCountData(APIView):
         }
 
         return Response(data)
+
+class VotesSumData(APIView):
+    # Unused user authentication classes
+    authentication_classes = []
+    permission_classes = []
+
+    # Retrieve STEEM and SBD market prices, return a dict
+    def get(self, request, format=None, *args, **kwargs):
+        resolution = kwargs['resolution']
+        analyses = kwargs['analyses']
+        self.model = votes_count_sum
+
+        ticker = self.model.objects.filter(resolution=resolution, analyses=analyses).order_by('-timestamp')[:1]
+        serializer = VotesSum(ticker, many=True)
+
+        return Response(serializer.data)

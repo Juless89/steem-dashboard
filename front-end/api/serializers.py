@@ -11,3 +11,9 @@ class TransfersCount(serializers.Serializer):
 class ClaimRewardsCount(serializers.Serializer):
     count = serializers.IntegerField()
     timestamp = serializers.DateTimeField()
+
+class VotesSum(serializers.Serializer):
+    analyses = serializers.CharField()
+    resolution = serializers.CharField()
+    data = serializers.CharField()
+    timestamp = serializers.DateTimeField()
