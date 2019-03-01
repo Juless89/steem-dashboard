@@ -22,43 +22,26 @@
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active" href="#">
+            <a id="votes" class="nav-link active" href="/votes">
               <span data-feather="home"></span>
-              Dashboard <span class="sr-only">(current)</span>
+              Votes <span class="sr-only">(current)</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a id="transfers" class="nav-link" href="/transfers">
               <span data-feather="file"></span>
-              Orders
+              Transfers
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a id="claim_rewards" class="nav-link" href="/claim_rewards">
               <span data-feather="shopping-cart"></span>
-              Products
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="users"></span>
-              Customers
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="bar-chart-2"></span>
-              Reports
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="layers"></span>
-              Integrations
+              Claim rewards
             </a>
           </li>
         </ul>
 
+        <!--
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
           <span>Saved reports</span>
           <a class="d-flex align-items-center text-muted" href="#">
@@ -91,6 +74,7 @@
             </a>
           </li>
         </ul>
+        -->
       </div>
     </nav>
 
@@ -109,26 +93,14 @@
         </div>
       </div>
 
-      <canvas id="chart" width="400" height="200"></canvas>
       <script>
-        var endpoint = '/api/votes/1h'
-
         $(document).ready(function(){
-            $.ajax({
-              method: "GET",
-              url: endpoint,
-              success: function(data){
-                console.log(data);
-                plot_graph(data);
-              },
-              error: function(error_data){
-                console.log(error_data)
-              }
-            });   
-          });
-
-
+          active_graph();
+        });
       </script>
+
+      {% block stats %}
+      {% endblock stats %}
 
       <h2>Section title</h2>
       <div class="table-responsive">

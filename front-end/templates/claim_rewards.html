@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block stats %}
+<canvas id="chart" width="400" height="200"></canvas>
+<script>
+    var endpoint = '/api/claim_rewards/day'
+
+    $(document).ready(function(){
+        $.ajax({
+            method: "GET",
+            url: endpoint,
+            success: function(data){
+                console.log(data);
+                plot_graph(data);
+            },
+            error: function(error_data){
+                console.log(error_data)
+            }
+        });   
+    });
+</script>
+{% endblock stats %}

@@ -5,7 +5,7 @@ function plot_graph (data){
       data: {
           labels: data.labels,
           datasets: [{
-              label: '# of Votes',
+              label: data.label,
               data: data.data,
               backgroundColor: [
                   'rgba(54, 162, 235, 0.2)',
@@ -36,5 +36,17 @@ function plot_graph (data){
           }
       }
   });
+};
+
+function active_graph() {
+    var pathname = window.location.pathname;
+    id = '#' + pathname.substr(1)
+    
+    console.log(pathname.substr(1));
+
+    
+    $("#votes").removeClass("nav-link active").addClass("nav-link")
+    $(id).addClass("nav-link active");
+
 };
 
