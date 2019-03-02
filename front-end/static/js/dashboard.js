@@ -82,14 +82,23 @@ function fill_table(data) {
     let array = JSON.parse(data.data);
 
     array.forEach(row => {
-        console.log(row);
-
         const tr = document.createElement("tr");
 
+        let x = 0
         row.forEach((cell) => {
             const td = document.createElement("td");
-            td.textContent = cell;
+            if (x == 1) {
+                const a = document.createElement("a");
+                a.textContent = '@' + cell;
+                a.target = "_blank"
+                a.href = 'https://www.steemit.com/@' + cell
+                td.appendChild(a);
+            }
+            else {
+                td.textContent = cell;
+            }
             tr.appendChild(td);
+            x += 1
         });
 
         rankingsBody.appendChild(tr);
@@ -121,9 +130,30 @@ function set_cookies(){
         Cookies.set('table_period', 'month', { expires: 7, path: '' });
     };
     if (Cookies.get('analyses') === undefined) {
-        Cookies.set('analyses', 'voter', { expires: 7, path: '' });
+        Cookies.set('analyses', 'author', { expires: 7, path: '' });
     };
 };
+
+function update_stats() {
+    var endpoint = '/api/stats' + window.location.pathname;
+
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function(data){
+            $("#operations").text(data.operations);
+            $("#block_num").text(data.block_num);
+        },
+        error: function(error_data){
+            console.log(error_data)
+        }
+    });  
+};
+
+$(document).ready(function() {
+    update_stats();
+    setInterval("update_stats();",3000);
+});
 
 $(document).ready(function() {
     var pathname = window.location.pathname;

@@ -7,6 +7,8 @@ from .serializers import *
 
 from datetime import datetime, timedelta
 
+import json
+
 def get_start_day(period, end):
     if period == 'ALL':
         return None
@@ -162,3 +164,35 @@ class VotesSumData(APIView):
         serializer = VotesSum(ticker, many=True)
 
         return Response(serializer.data)
+
+class GeneralStats(APIView):
+    # Unused user authentication classes
+    authentication_classes = []
+    permission_classes = []
+
+    # Retrieve STEEM and SBD market prices, return a dict
+    def get(self, request, format=None, *args, **kwargs):
+        operation = kwargs['operation']
+
+        if operation == 'votes':
+            self.model = votes
+        elif operation == 'transfers':
+            self.model = transfers
+        elif operation == 'claim_rewards':
+            self.model = claim_rewards
+
+        end = datetime.now()
+        start = end - timedelta(days=1)
+
+        count = self.model.objects.filter(timestamp__range=(start, end)).count()
+
+        self.model = blocks 
+        ticker = self.model.objects.all().order_by('-block_num')[:1]
+        block = Blocks(ticker, many=True)
+
+        data = {
+            "operations": count,
+            "block_num": block.data[0]['block_num'],
+        }
+
+        return Response(data)

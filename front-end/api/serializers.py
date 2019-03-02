@@ -17,3 +17,7 @@ class VotesSum(serializers.Serializer):
     resolution = serializers.CharField()
     data = serializers.CharField()
     timestamp = serializers.DateTimeField()
+
+class Blocks(serializers.Serializer):
+    block_num = serializers.CharField()
+    timestamp = serializers.DateTimeField() 
