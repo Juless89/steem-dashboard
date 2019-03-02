@@ -3,7 +3,15 @@
 {% block stats %}
 <canvas id="chart" width="400" height="200"></canvas>
 <script>
-    var endpoint = '/api/votes/day'
+
+    if (Cookies.get('chart') === undefined) {
+        Cookies.set('chart', 'day', { expires: 7, path: '' });
+    }
+    if (Cookies.get('period') === undefined) {
+        Cookies.set('period', '30D', { expires: 7, path: '' });
+    }
+
+    var endpoint = '/api/votes/' + Cookies.get('chart');
 
     $(document).ready(function(){
         get_graph_data(endpoint); 

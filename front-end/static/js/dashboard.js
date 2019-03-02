@@ -39,9 +39,10 @@ function plot_graph(data){
 };
 
 function active_graph() {
-    var pathname = window.location.pathname;
-    id = '#' + pathname.substr(1)
-    
+    id = '#' + Cookies.get('chart')
+    $(id).addClass("nav-link active");
+
+    id = '#' + Cookies.get('period')
     $(id).addClass("nav-link active");
 
 };
@@ -63,22 +64,27 @@ function get_graph_data(endpoint) {
 
 $(document).ready(function() {
     var pathname = window.location.pathname;
-    api = 'api/' + pathname.substr(1)
+    api = 'api/' + pathname.substr(1) + '/'
 
     $("#minute").click(function(){
-        get_graph_data(api + '/minute');
+        Cookies.set('chart', 'minute', { expires: 7, path: '' });
+        console.log(Cookies.get('chart'));
+        get_graph_data(api + Cookies.get('chart'));
         $('.btn-sm').removeClass("active")
-        $("#minute").addClass("active");
+        active_graph();
     }); 
     $("#hour").click(function(){
-        get_graph_data(api + '/hour');
+        Cookies.set('chart', 'hour', { expires: 7, path: '' });
+        console.log(Cookies.get('chart'));
+        get_graph_data(api + Cookies.get('chart'));
         $('.btn-sm').removeClass("active")
-        $("#hour").addClass("active");
+        active_graph();
     }); 
     $("#day").click(function(){
-        get_graph_data(api + '/day');
+        Cookies.set('chart', 'day', { expires: 7, path: '' });
+        get_graph_data(api + Cookies.get('chart'));
         $('.btn-sm').removeClass("active")
-        $("#day").addClass("active");
+        active_graph();
     }); 
 
     
