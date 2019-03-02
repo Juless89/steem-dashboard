@@ -55,10 +55,12 @@ class Node(threading.Thread):
                 except Exception:
                     continue
 
+        self.db.add_block(block_num, timestamp)
+
     def run(self):
         # main block gathering thread
         rpc = RPC_node(
-            start=30773649, # 2019-01-01 0:00:00
+            start=30791879, # 2019-01-01 0:00:00
             amount_of_threads=2,
             blocks_queue=self.blocks_queue,
             blocks_queue_lock=self.blocks_queue_lock,
@@ -81,7 +83,6 @@ class Node(threading.Thread):
 
                                 # process all operations
                                 self.process_transactions(block)
-
                             finally:
                                 self.lock.release()
 
