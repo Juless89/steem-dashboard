@@ -45,6 +45,12 @@ function active_graph() {
     id = '#' + Cookies.get('period')
     $(id).addClass("active");
 
+    id = '#table_' + Cookies.get('table_period')
+    $(id).addClass("active");
+
+    id = '#' + Cookies.get('analyses')
+    $(id).addClass("active");
+
     var pathname = window.location.pathname;
     id = '#' + pathname.substr(1)
     $(id).addClass("nav-link active");
@@ -65,12 +71,38 @@ function get_graph_data(endpoint) {
     });  
 };
 
+function fill_table(data) {
+    const rankingsBody = document.querySelector("#table1 > tbody");
+
+    // clear table
+    while (rankingsBody.firstChild){
+        rankingsBody.removeChild(rankingsBody.firstChild);
+    }
+
+    let array = JSON.parse(data.data);
+
+    array.forEach(row => {
+        console.log(row);
+
+        const tr = document.createElement("tr");
+
+        row.forEach((cell) => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            tr.appendChild(td);
+        });
+
+        rankingsBody.appendChild(tr);
+        
+    });
+}
+
 function get_table(endpoint) {
     $.ajax({
         method: "GET",
         url: endpoint,
         success: function(data){
-            console.log(data);
+            fill_table(data[0]);
         },
         error: function(error_data){
             console.log(error_data)
@@ -83,7 +115,13 @@ function set_cookies(){
         Cookies.set('chart', 'day', { expires: 7, path: '' });
     };
     if (Cookies.get('period') === undefined) {
-        Cookies.set('period', '30D', { expires: 7, path: '' });
+        Cookies.set('period', 'ALL', { expires: 7, path: '' });
+    };
+    if (Cookies.get('table_period') === undefined) {
+        Cookies.set('table_period', 'month', { expires: 7, path: '' });
+    };
+    if (Cookies.get('analyses') === undefined) {
+        Cookies.set('analyses', 'voter', { expires: 7, path: '' });
     };
 };
 
@@ -149,5 +187,34 @@ $(document).ready(function() {
         active_graph()
     }); 
 
-    
+    $("#table_month").click(function(){
+        Cookies.set('table_period', 'month', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        $('.btn-sm').removeClass("active")
+        active_graph()
+    });
+    $("#table_week").click(function(){
+        Cookies.set('table_period', 'week', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        $('.btn-sm').removeClass("active")
+        active_graph()
+    });
+    $("#table_day").click(function(){
+        Cookies.set('table_period', 'day', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        $('.btn-sm').removeClass("active")
+        active_graph()
+    });
+    $("#author").click(function(){
+        Cookies.set('analyses', 'author', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        $('.btn-sm').removeClass("active")
+        active_graph()
+    });
+    $("#voter").click(function(){
+        Cookies.set('analyses', 'voter', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        $('.btn-sm').removeClass("active")
+        active_graph()
+    });
 });

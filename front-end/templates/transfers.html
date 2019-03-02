@@ -9,7 +9,6 @@
         var endpoint = '/api/transfers/' + Cookies.get('chart') + '/' + Cookies.get('period');
 
         get_graph_data(endpoint); 
-        get_table('api/table/votes/author/day')
     });
 </script>
 {% endblock stats %}
