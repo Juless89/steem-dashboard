@@ -29,7 +29,7 @@ class Database():
         self.db.close()
 
     def add_block(self, num, timestamp):
-        query = (f"INSERT INTO `api_blocks` (`id`, `number`, `timestamp`) VALUES (NULL, '{num}', '{timestamp}')")
+        query = (f"INSERT INTO `api_blocks` (`id`, `block_num`, `timestamp`) VALUES (NULL, '{num}', '{timestamp}')")
         self.post_data(query, 'api_blocks')
 
     def add_vote(self, voter, author, permlink, weight, timestamp, value=0):
