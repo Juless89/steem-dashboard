@@ -192,7 +192,7 @@ class GeneralStats(APIView):
 
         data = {
             "operations": count,
-            "block_num": block.data[0]['block_num'],
+            "block_num": block.data,
         }
 
         return Response(data)

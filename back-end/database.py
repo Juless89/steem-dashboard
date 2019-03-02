@@ -74,7 +74,7 @@ class Database():
         values = ''
         for row, value in kwargs.items():
             rows += f', `{row}`'
-            values += f', "{value}"'
+            values += f", '{value}'"
 
         query = head + rows + ') VALUES (NULL' + values + ')'
         self.post_data(query, table)

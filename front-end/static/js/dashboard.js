@@ -1,4 +1,6 @@
 function plot_graph(data){
+$("canvas#chart").remove();
+$("#chart_canvas").append('<canvas id="chart" width="400" height="200"></canvas>');
   var ctx = document.getElementById("chart").getContext('2d');
   var myChart = new Chart(ctx, {
       type: 'line',
@@ -142,7 +144,10 @@ function update_stats() {
         url: endpoint,
         success: function(data){
             $("#operations").text(data.operations);
-            $("#block_num").text(data.block_num);
+            console.log(data.block_num)
+            block_num = data.block_num[0].block_num
+            timestamp = data.block_num[0].timestamp
+            $("#block_num").text(block_num);
         },
         error: function(error_data){
             console.log(error_data)
@@ -152,7 +157,7 @@ function update_stats() {
 
 $(document).ready(function() {
     update_stats();
-    setInterval("update_stats();",3000);
+    setInterval("update_stats();",2500);
 });
 
 $(document).ready(function() {
