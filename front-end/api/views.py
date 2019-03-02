@@ -157,10 +157,10 @@ class VotesSumData(APIView):
     # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
         resolution = kwargs['resolution']
-        analyses = kwargs['analyses']
+        analytics = kwargs['analytics']
         self.model = votes_count_sum
 
-        ticker = self.model.objects.filter(resolution=resolution, analyses=analyses).order_by('-timestamp')[:1]
+        ticker = self.model.objects.filter(resolution=resolution, analyses=analytics).order_by('-timestamp')[:1]
         serializer = VotesSum(ticker, many=True)
 
         return Response(serializer.data)
@@ -185,6 +185,12 @@ class GeneralStats(APIView):
         start = end - timedelta(days=1)
 
         count = self.model.objects.filter(timestamp__range=(start, end)).count()
+        previous_count = self.model.objects.filter(
+            timestamp__range=(start - timedelta(days=1), start)).count(
+        )
+        count_30d = self.model.objects.filter(
+            timestamp__range=(end - timedelta(days=30), end - timedelta(days=29))).count(
+        )
 
         self.model = blocks 
         ticker = self.model.objects.all().order_by('-block_num')[:1]
@@ -193,6 +199,8 @@ class GeneralStats(APIView):
         data = {
             "operations": count,
             "block_num": block.data,
+            "delta": '{:.2f}'.format((count-previous_count)/previous_count*100),
+            "delta_30d": '{:.2f}'.format((count-count_30d)/count_30d*100)
         }
 
         return Response(data)

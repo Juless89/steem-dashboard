@@ -60,7 +60,7 @@ class Node(threading.Thread):
     def run(self):
         # main block gathering thread
         rpc = RPC_node(
-            start=30791879, # 2019-01-01 0:00:00
+            start=30791879,
             amount_of_threads=2,
             blocks_queue=self.blocks_queue,
             blocks_queue_lock=self.blocks_queue_lock,

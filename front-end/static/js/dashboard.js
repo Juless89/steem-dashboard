@@ -61,7 +61,7 @@ function active_graph() {
     $(id).addClass("active");
 
     // analysis type
-    id = '#' + Cookies.get('analyses')
+    id = '#' + Cookies.get('analytics')
     $(id).addClass("active");
 
     // current operation type
@@ -159,8 +159,8 @@ function set_cookies(){
     };
 
     // analysis type
-    if (Cookies.get('analyses') === undefined) {
-        Cookies.set('analyses', 'author', { expires: 7, path: '' });
+    if (Cookies.get('analytics') === undefined) {
+        Cookies.set('analytics', 'author', { expires: 7, path: '' });
     };
 };
 
@@ -174,9 +174,13 @@ function update_stats() {
         success: function(data){
             // extract data and set to selected fields
             $("#operations").text(data.operations);
-            block_num = data.block_num[0].block_num
-            timestamp = data.block_num[0].timestamp
+            const block_num = data.block_num[0].block_num
+            const delta = data.delta
+            const delta_30d = data.delta_30d
+            const timestamp = data.block_num[0].timestamp
             $("#block_num").text(block_num);
+            $("#delta").text(delta + '%')
+            $("#delta_30d").text(delta_30d + '%');
         },
         error: function(error_data){
             console.log(error_data)
@@ -260,31 +264,31 @@ $(document).ready(function() {
     // tables
     $("#table_month").click(function(){
         Cookies.set('table_period', 'month', { expires: 7, path: '' });
-        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
         active_graph()
     });
     $("#table_week").click(function(){
         Cookies.set('table_period', 'week', { expires: 7, path: '' });
-        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
         active_graph()
     });
     $("#table_day").click(function(){
         Cookies.set('table_period', 'day', { expires: 7, path: '' });
-        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
         active_graph()
     });
     $("#author").click(function(){
-        Cookies.set('analyses', 'author', { expires: 7, path: '' });
-        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        Cookies.set('analytics', 'author', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
         active_graph()
     });
     $("#voter").click(function(){
-        Cookies.set('analyses', 'voter', { expires: 7, path: '' });
-        get_table('api/table/votes/' + Cookies.get('analyses') + '/' + Cookies.get('table_period'));
+        Cookies.set('analytics', 'voter', { expires: 7, path: '' });
+        get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
         active_graph()
     });

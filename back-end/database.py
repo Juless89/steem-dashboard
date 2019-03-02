@@ -51,7 +51,6 @@ class Database():
 
     def get_votes(self, start, end):
         query = f"SELECT `voter`, `author` FROM `api_votes` WHERE `timestamp` BETWEEN '{start}' AND '{end}'"
-        print(query)
 
         return self.get_data(query)
 
@@ -70,13 +69,13 @@ class Database():
     def add_analyses(self, table, **kwargs):
         head = f"INSERT INTO `{table}` (`id`"
 
-        rows = ''
+        columns = ''
         values = ''
-        for row, value in kwargs.items():
-            rows += f', `{row}`'
+        for column, value in kwargs.items():
+            columns += f', `{column}`'
             values += f", '{value}'"
 
-        query = head + rows + ') VALUES (NULL' + values + ')'
+        query = head + columns + ') VALUES (NULL' + values + ')'
         self.post_data(query, table)
 
     # Execute all stored sql queries at once
@@ -144,7 +143,7 @@ class Database():
     def update_record(self, amount, timestamp, table):
         # retrieve current value for amount
         self.cur.execute(f"SELECT `count` FROM `{table}` "
-                         f"WHERE `timestamp` = '{timestamp}';")
+                        f"WHERE `timestamp` = '{timestamp}';")
         total = amount + self.cur.fetchone()[0]
 
         # update the record
