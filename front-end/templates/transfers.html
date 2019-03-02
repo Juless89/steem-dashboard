@@ -3,10 +3,13 @@
 {% block stats %}
 <canvas id="chart" width="400" height="200"></canvas>
 <script>
-    var endpoint = '/api/transfers/day'
-
     $(document).ready(function(){
-        get_graph_data(endpoint);
+
+        set_cookies();
+        var endpoint = '/api/transfers/' + Cookies.get('chart') + '/' + Cookies.get('period');
+
+        get_graph_data(endpoint); 
+        get_table('api/table/votes/author/day')
     });
 </script>
 {% endblock stats %}

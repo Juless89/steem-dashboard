@@ -3,18 +3,13 @@
 {% block stats %}
 <canvas id="chart" width="400" height="200"></canvas>
 <script>
-
-    if (Cookies.get('chart') === undefined) {
-        Cookies.set('chart', 'day', { expires: 7, path: '' });
-    }
-    if (Cookies.get('period') === undefined) {
-        Cookies.set('period', '30D', { expires: 7, path: '' });
-    }
-
-    var endpoint = '/api/votes/' + Cookies.get('chart');
-
     $(document).ready(function(){
+
+        set_cookies();
+        var endpoint = '/api/votes/' + Cookies.get('chart') + '/' + Cookies.get('period');
+
         get_graph_data(endpoint); 
+        get_table('api/table/votes/author/day')
     });
 </script>
 {% endblock stats %}

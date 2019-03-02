@@ -101,6 +101,8 @@
       <script>
         $(document).ready(function(){
           active_graph();
+          const rankingsBody = document.querySelector("#table1 > tbody");
+          console.log(rankingsBody)
         });
       </script>
 
@@ -119,7 +121,7 @@
       </div>
     </div>
       <div class="table-responsive">
-        <table class="table table-striped table-sm">
+        <table id="table1" class="table table-striped table-sm">
           <thead>
             <tr>
               <th>#</th>
