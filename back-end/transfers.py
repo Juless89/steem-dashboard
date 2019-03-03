@@ -43,7 +43,7 @@ class Transfers(threading.Thread):
 
             if not self.scraping:
                 self.counter.dump_data()
-                self.db.dump('api_votes')
+                self.db.dump('api_tranfers')
             else:
                 # For each minute of data processed upload the data into the
                 # database and clear the buffers.
