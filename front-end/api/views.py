@@ -51,7 +51,8 @@ class VotesCountData(APIView):
         x = []
         y = []
 
-        for row in serializer.data:
+        # Omit last result
+        for row in serializer.data[:-1]:
             x.append(row['timestamp'])
             y.append(row['count'])
 
@@ -94,7 +95,8 @@ class TransfersCountData(APIView):
         x = []
         y = []
 
-        for row in serializer.data:
+        # Omit last result
+        for row in serializer.data[:-1] :
             x.append(row['timestamp'])
             y.append(row['count'])
 
@@ -137,7 +139,8 @@ class ClaimRewardsCountData(APIView):
         x = []
         y = []
 
-        for row in serializer.data:
+        # Omit last result
+        for row in serializer.data[:-1]:
             x.append(row['timestamp'])
             y.append(row['count'])
 
