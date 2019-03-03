@@ -64,7 +64,7 @@ class Blocks(threading.Thread):
         self.n = n
         self.base = base
         self.ready = ready
-        self.end = self.base + 247462
+        self.end = self.base + 1000000
         self.num = self.base + self.id
 
     # Perform API call to get block return None for non existing blocks and
@@ -111,7 +111,7 @@ class Blocks(threading.Thread):
     # the slowest thread is not greater than 5, also as long as the total
     # queue length does not exceed 320
     def run(self):
-        while True:
+        while self.num <= self.end:
             if (self.ready[self.id-1] < min(self.ready) + 5 and
                     len(self.queue) <= 5*self.n):
                 try:
