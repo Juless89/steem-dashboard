@@ -49,6 +49,11 @@ class Database():
 
         return self.get_data(query)
 
+    def get_last_block(self):
+        query = ("SELECT `block_num` FROM api_blocks order by `block_num` desc limit 1;")
+
+        return self.get_data(query)
+
     def get_votes(self, start, end):
         query = f"SELECT `voter`, `author` FROM `api_votes` WHERE `timestamp` BETWEEN '{start}' AND '{end}'"
 

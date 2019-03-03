@@ -3,6 +3,8 @@ from transfers import Transfers
 from claim_reward import Claim_rewards
 from steem_node import Node
 
+from database import Database
+
 import threading
 # import time
 
@@ -26,11 +28,17 @@ if __name__ == "__main__":
         arrays['claim_reward_balance_operation'], lock,
     )
 
-    # start all threads
-    node.start()
-    votes.start()
-    claim_rewards.start()
-    transfers.start()
+    # check for start block
+    db = Database()
+    data = db.get_last_block()
+    if len(data) > 0:
+        # start all threads
+        node.start()
+        votes.start()
+        claim_rewards.start()
+        transfers.start()
+    else:
+        print('Set start block')
 
     # Track memory usage and difference
     """

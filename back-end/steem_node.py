@@ -58,42 +58,48 @@ class Node(threading.Thread):
         self.db.add_block(block_num, timestamp)
 
     def run(self):
-        # main block gathering thread
-        rpc = RPC_node(
-            start=30791879,
-            amount_of_threads=2,
-            blocks_queue=self.blocks_queue,
-            blocks_queue_lock=self.blocks_queue_lock,
-        )
-        rpc.start()
+        data = self.db.get_last_block()
+        if len(data > 0):
+            last_block = [0][0]
 
-        while True:
-            # check for new blocks
-            if len(self.blocks_queue) > 0:
-                try:
-                    self.blocks_queue_lock.acquire()
-                    # Take out all new blocks at once
-                    while (len(self.blocks_queue) > 0):
-                        if self.check_buffers:
-                            # remove from queue
-                            block = self.blocks_queue.pop(0)
+            # main block gathering thread
+            rpc = RPC_node(
+                start=last_block+1,
+                amount_of_threads=2,
+                blocks_queue=self.blocks_queue,
+                blocks_queue_lock=self.blocks_queue_lock,
+            )
+            rpc.start()
 
-                            try:
-                                self.lock.acquire()
+            while True:
+                # check for new blocks
+                if len(self.blocks_queue) > 0:
+                    try:
+                        self.blocks_queue_lock.acquire()
+                        # Take out all new blocks at once
+                        while (len(self.blocks_queue) > 0):
+                            if self.check_buffers:
+                                # remove from queue
+                                block = self.blocks_queue.pop(0)
 
-                                # process all operations
-                                self.process_transactions(block)
-                            finally:
-                                self.lock.release()
+                                try:
+                                    self.lock.acquire()
 
-                        else:
-                            time.sleep(0.1)
+                                    # process all operations
+                                    self.process_transactions(block)
+                                finally:
+                                    self.lock.release()
 
-                        # blocks per second counter
-                        self.counter += 1
+                            else:
+                                time.sleep(0.1)
 
-                finally:
-                    self.blocks_queue_lock.release()
+                            # blocks per second counter
+                            self.counter += 1
 
-            # wait for new blocks
-            time.sleep(0.05)
+                    finally:
+                        self.blocks_queue_lock.release()
+
+                # wait for new blocks
+                time.sleep(0.05)
+        else:
+            print('No start block set')

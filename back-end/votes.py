@@ -7,7 +7,7 @@ from counter import Counter
 
 
 class Votes(threading.Thread):
-    def __init__(self, storage, lock):
+    def __init__(self, storage, lock, scraping=False):
         threading.Thread.__init__(self)
         self.storage = storage
         self.lock = lock
@@ -16,6 +16,7 @@ class Votes(threading.Thread):
         self.hour = None
         self.date = None
         self.minute = None
+        self.scraping = scraping
 
         self.db = Database()
 
@@ -40,12 +41,16 @@ class Votes(threading.Thread):
                 self.date = self.timestamp.date()
                 self.counter.date = self.timestamp.date()
 
-            # For each minute of data processed upload the data into the
-            # database and clear the buffers.
-            if self.timestamp.minute != self.minute:
+            if not self.scraping:
                 self.counter.dump_data()
                 self.db.dump('api_votes')
-                self.minute = self.timestamp.minute
+            else:
+                # For each minute of data processed upload the data into the
+                # database and clear the buffers.
+                if self.timestamp.minute != self.minute:
+                    self.counter.dump_data()
+                    self.db.dump('api_votes')
+                    self.minute = self.timestamp.minute
         # deconstruct operation and prepare for storing
         else:
             voter = vote['value']['voter']
