@@ -64,7 +64,7 @@ class Blocks(threading.Thread):
         self.n = n
         self.base = base
         self.ready = ready
-        self.end = self.base + 1000000
+        self.end = self.base + 3790423
         self.num = self.base + self.id
 
     # Perform API call to get block return None for non existing blocks and

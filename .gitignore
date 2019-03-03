@@ -5,3 +5,9 @@ settings.cnf
 test.py
 test2.py
 test3.py
+back-end/__pycache__/
+front-end/api/__pycache__/
+front-end/api/migrations/__pycache__/
+front-end/dashboard/__pycache__/
+front-end/pages/__pycache__/
+front-end/pages/migrations/__pycache__/

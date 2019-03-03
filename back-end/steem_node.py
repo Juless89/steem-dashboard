@@ -24,6 +24,7 @@ class Node(threading.Thread):
         self.s_time = datetime.now()
 
         if len(kwargs) > 0:
+            print(kwargs)
             self.scraping=kwargs['scraping']
             self.block_num = kwargs['block_num']
 
@@ -61,9 +62,9 @@ class Node(threading.Thread):
                 except Exception:
                     continue
 
-        if not self.scraping:
+        if self.scraping:
             self.block_counter += 1
-            if self.block_counter % 20 == 0:
+            if self.block_counter % 1000 == 0:
                 self.db.add_block(block_num, timestamp)
         else:
             self.db.add_block(block_num, timestamp)
@@ -74,12 +75,17 @@ class Node(threading.Thread):
             if len(data) > 0:
                 start_block = data[0][0]
         else:
-            start_block = self.block_num
+            start_block = int(self.block_num)
+
+        if not self.scraping:
+            n_threads = 2
+        else:
+            n_threads = 32
 
         # main block gathering thread
         rpc = RPC_node(
             start=start_block+1,
-            amount_of_threads=2,
+            amount_of_threads=n_threads,
             blocks_queue=self.blocks_queue,
             blocks_queue_lock=self.blocks_queue_lock,
         )

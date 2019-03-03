@@ -13,16 +13,17 @@ if __name__ == "__main__":
     scraping = False
     valid = 0
     settings = {}
-    try:
+    if len(sys.argv) == 2:
         block_num = sys.argv[1]
         if block_num.isdigit():
-            valid=1
+            valid = 1
             settings['block_num'] = block_num
+            settings['scraping'] = True
             scraping = True
         else:
             print('String')
-    except Exception:
-        print('Give a block number')
+    elif len(sys.argv) == 1:
+        valid = 1
 
     if valid:
         # queues for each different operation type
