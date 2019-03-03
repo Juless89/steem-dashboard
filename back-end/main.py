@@ -6,39 +6,55 @@ from steem_node import Node
 from database import Database
 
 import threading
+import sys
 # import time
 
 if __name__ == "__main__":
-    # queues for each different operation type
-    arrays = {
-        "vote_operation": [],
-        "transfer_operation": [],
-        "claim_reward_balance_operation": [],
-    }
-    # shared lock between all operation threads
-    lock = threading.Lock()
+    scraping = False
+    valid = 0
+    settings = {}
+    try:
+        block_num = sys.argv[1]
+        if block_num.isdigit():
+            valid=1
+            settings['block_num'] = block_num
+            scraping = True
+        else:
+            print('String')
+    except Exception:
+        print('Give a block number')
 
-    # STEEM blockchain node api
-    node = Node(arrays, lock)
+    if valid:
+        # queues for each different operation type
+        arrays = {
+            "vote_operation": [],
+            "transfer_operation": [],
+            "claim_reward_balance_operation": [],
+        }
+        # shared lock between all operation threads
+        lock = threading.Lock()
 
-    # processing threads for each operation type
-    votes = Votes(arrays['vote_operation'], lock)
-    transfers = Transfers(arrays['transfer_operation'], lock)
-    claim_rewards = Claim_rewards(
-        arrays['claim_reward_balance_operation'], lock,
-    )
+        # STEEM blockchain node api
+        node = Node(arrays, lock, **settings)
 
-    # check for start block
-    db = Database()
-    data = db.get_last_block()
-    if len(data) > 0:
-        # start all threads
-        node.start()
-        votes.start()
-        claim_rewards.start()
-        transfers.start()
-    else:
-        print('Set start block')
+        # processing threads for each operation type
+        votes = Votes(arrays['vote_operation'], lock, scraping)
+        transfers = Transfers(arrays['transfer_operation'], lock, scraping)
+        claim_rewards = Claim_rewards(
+            arrays['claim_reward_balance_operation'], lock, scraping
+        )
+
+        # check for start block
+        db = Database()
+        data = db.get_last_block()
+        if len(data) > 0:
+            # start all threads
+            node.start()
+            votes.start()
+            claim_rewards.start()
+            transfers.start()
+        else:
+            print('Set start block')
 
     # Track memory usage and difference
     """

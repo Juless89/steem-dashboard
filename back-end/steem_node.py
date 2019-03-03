@@ -10,16 +10,22 @@ import time
 # extracts all operations and sorts them for processing by each
 # operation thread.
 class Node(threading.Thread):
-    def __init__(self, votes_arr, lock):
+    def __init__(self, votes_arr, lock, **kwargs):
         threading.Thread.__init__(self)
+        self.block_num = None
+        self.scraping = False
         self.lock = lock
         self.arrays = votes_arr
         self.blocks_queue = []
         self.blocks_queue_lock = threading.Lock()
         self.db = Database()
-
         self.counter = 0
+        self.block_counter = 0
         self.s_time = datetime.now()
+
+        if len(kwargs) > 0:
+            self.scraping=kwargs['scraping']
+            self.block_num = kwargs['block_num']
 
     # To prevent build up with the database check if all previous operations
     # have already been stored.
@@ -55,51 +61,57 @@ class Node(threading.Thread):
                 except Exception:
                     continue
 
-        self.db.add_block(block_num, timestamp)
+        if not self.scraping:
+            self.block_counter += 1
+            if self.block_counter % 20 == 0:
+                self.db.add_block(block_num, timestamp)
+        else:
+            self.db.add_block(block_num, timestamp)
 
     def run(self):
-        data = self.db.get_last_block()
-        if len(data) > 0:
-            last_block = data[0][0]
-
-            # main block gathering thread
-            rpc = RPC_node(
-                start=last_block+1,
-                amount_of_threads=2,
-                blocks_queue=self.blocks_queue,
-                blocks_queue_lock=self.blocks_queue_lock,
-            )
-            rpc.start()
-
-            while True:
-                # check for new blocks
-                if len(self.blocks_queue) > 0:
-                    try:
-                        self.blocks_queue_lock.acquire()
-                        # Take out all new blocks at once
-                        while (len(self.blocks_queue) > 0):
-                            if self.check_buffers:
-                                # remove from queue
-                                block = self.blocks_queue.pop(0)
-
-                                try:
-                                    self.lock.acquire()
-
-                                    # process all operations
-                                    self.process_transactions(block)
-                                finally:
-                                    self.lock.release()
-
-                            else:
-                                time.sleep(0.1)
-
-                            # blocks per second counter
-                            self.counter += 1
-
-                    finally:
-                        self.blocks_queue_lock.release()
-
-                # wait for new blocks
-                time.sleep(0.05)
+        if not self.block_num:
+            data = self.db.get_last_block()
+            if len(data) > 0:
+                start_block = data[0][0]
         else:
-            print('No start block set')
+            start_block = self.block_num
+
+        # main block gathering thread
+        rpc = RPC_node(
+            start=start_block+1,
+            amount_of_threads=2,
+            blocks_queue=self.blocks_queue,
+            blocks_queue_lock=self.blocks_queue_lock,
+        )
+        rpc.start()
+
+        while True:
+            # check for new blocks
+            if len(self.blocks_queue) > 0:
+                try:
+                    self.blocks_queue_lock.acquire()
+                    # Take out all new blocks at once
+                    while (len(self.blocks_queue) > 0):
+                        if self.check_buffers:
+                            # remove from queue
+                            block = self.blocks_queue.pop(0)
+
+                            try:
+                                self.lock.acquire()
+
+                                # process all operations
+                                self.process_transactions(block)
+                            finally:
+                                self.lock.release()
+
+                        else:
+                            time.sleep(0.1)
+
+                        # blocks per second counter
+                        self.counter += 1
+
+                finally:
+                    self.blocks_queue_lock.release()
+
+            # wait for new blocks
+            time.sleep(0.05)
