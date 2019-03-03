@@ -60,7 +60,7 @@ class Node(threading.Thread):
     def run(self):
         data = self.db.get_last_block()
         if len(data) > 0:
-            last_block = [0][0]
+            last_block = data[0][0]
 
             # main block gathering thread
             rpc = RPC_node(
