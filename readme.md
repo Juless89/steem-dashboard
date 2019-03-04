@@ -87,7 +87,12 @@ The back end has can be used in head mode or scraping mode. Head mode continues 
 
 ```
 cd back-end
+
+# scrape mode
 python main.py 30000000 28800 32
+
+# head mode
+python main.py
 ```
 
 ## Built With
@@ -95,7 +100,7 @@ python main.py 30000000 28800 32
 * [Django Framework](https://github.com/django/django) - The web framework used
 * [Django REST Framework](https://github.com/django/django) - The REST framework used
 * [Bootstrap](https://getbootstrap.com/) - HTML/CSS Framework
-* [Charts.js](https://www.chartjs.org/) - HTML/CSS Framework
+* [Charts.js](https://www.chartjs.org/) - Javascript charts library
 
 
 ## Versioning
@@ -105,8 +110,6 @@ We use [SemVer](http://semver.org/) for versioning.
 ## Authors
 
 * **Julian Kramer** - *Initial work* - [Juless89](https://github.com/Juless89)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
 ## License
 
