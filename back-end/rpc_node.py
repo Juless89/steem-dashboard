@@ -9,7 +9,7 @@ import json
 # in order and passes them on to be processed
 class Sorter(threading.Thread):
     def __init__(self, num, queue, lock, blocks, blocks_lock,
-                blocks_queue, blocks_queue_lock, n):
+                 blocks_queue, blocks_queue_lock, n):
         threading.Thread.__init__(self)
         self.queue = queue
         self.lock = lock
@@ -56,7 +56,7 @@ class Sorter(threading.Thread):
 
 # Block gathering thread
 class Blocks(threading.Thread):
-    def __init__(self, id, n, base, queue, lock, ready):
+    def __init__(self, id, n, base, block_count, queue, lock, ready):
         threading.Thread.__init__(self)
         self.id = id
         self.queue = queue
@@ -64,7 +64,7 @@ class Blocks(threading.Thread):
         self.n = n
         self.base = base
         self.ready = ready
-        self.end = self.base + 3790423
+        self.end = self.base + block_count
         self.num = self.base + self.id
 
     # Perform API call to get block return None for non existing blocks and
@@ -135,10 +135,11 @@ class Blocks(threading.Thread):
 
 # Main thread used to manage all block gathering threads and the sorter.
 class RPC_node(threading.Thread):
-    def __init__(self, start, blocks_queue, blocks_queue_lock,
-                amount_of_threads=1):
+    def __init__(self, start, block_count, blocks_queue, blocks_queue_lock,
+                 amount_of_threads=1):
         threading.Thread.__init__(self)
         self.begin = start
+        self.block_count = block_count
         self.blocks = []
         self.blocks_lock = threading.Lock()
         self.blocks_queue = blocks_queue
@@ -155,7 +156,9 @@ class RPC_node(threading.Thread):
 
         # create, start and store all block gathering threads
         for x in range(1, self.n+1):
-            thread = Blocks(x, self.n, self.begin, queue, lock, self.ready)
+            thread = Blocks(
+                x, self.n, self.begin, self.block_count,
+                queue, lock, self.ready)
             thread.start()
             threads.append(thread)
 

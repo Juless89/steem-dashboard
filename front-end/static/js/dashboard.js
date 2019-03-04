@@ -1,4 +1,4 @@
-// Create new chart. First remove to prevent data mutations as all charts are plotted 
+// Create new chart. First remove to prevent data mutations as all charts are plotted
 // to the same canvas.
 function plot_graph(data){
     // canvas
@@ -84,7 +84,7 @@ function get_graph_data(endpoint) {
         error: function(error_data){
             console.log(error_data)
         }
-    });  
+    });
 };
 
 // fill table
@@ -138,7 +138,7 @@ function get_table(endpoint) {
         error: function(error_data){
             console.log(error_data)
         }
-    });  
+    });
 };
 
 // Check for cookies if none set preset cookies.
@@ -164,7 +164,7 @@ function set_cookies(){
     };
 };
 
-// Periodically update main stats 
+// Periodically update main stats
 function update_stats() {
     var endpoint = '/api/stats' + window.location.pathname;
 
@@ -185,7 +185,7 @@ function update_stats() {
         error: function(error_data){
             console.log(error_data)
         }
-    });  
+    });
 };
 
 // Update stats every 2.5s
@@ -209,13 +209,13 @@ $(document).ready(function() {
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
     $("#hour").click(function(){
         Cookies.set('chart', 'hour', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
     $("#day").click(function(){
         Cookies.set('chart', 'day', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
@@ -229,19 +229,19 @@ $(document).ready(function() {
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
     $("#30D").click(function(){
         Cookies.set('period', '30D', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
     $("#7D").click(function(){
         Cookies.set('period', '7D', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
     $("#24H").click(function(){
         Cookies.set('period', '24H', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
@@ -259,7 +259,7 @@ $(document).ready(function() {
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_graph()
-    }); 
+    });
 
     // tables
     $("#table_month").click(function(){

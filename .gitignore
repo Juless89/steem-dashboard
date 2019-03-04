@@ -11,3 +11,6 @@ front-end/api/migrations/__pycache__/
 front-end/dashboard/__pycache__/
 front-end/pages/__pycache__/
 front-end/pages/migrations/__pycache__/
+staticfiles/
+media/
+uwsgi_params

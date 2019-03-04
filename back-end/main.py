@@ -13,17 +13,23 @@ if __name__ == "__main__":
     scraping = False
     valid = 0
     settings = {}
-    if len(sys.argv) == 2:
+    if len(sys.argv) == 4:
         block_num = sys.argv[1]
+        block_count = sys.argv[2]
+        n_threads = sys.argv[3]
         if block_num.isdigit():
-            valid = 1
-            settings['block_num'] = block_num
+            settings['block_num'] = int(block_num)
+            settings['block_count'] = int(block_count)
+            settings['n_threads'] = int(n_threads)
             settings['scraping'] = True
             scraping = True
+            valid = 1
         else:
             print('String')
     elif len(sys.argv) == 1:
         valid = 1
+    else:
+        print('For scraping: python main.py <start_block> <blocks> <threads>')
 
     if valid:
         # queues for each different operation type

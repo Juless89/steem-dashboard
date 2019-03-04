@@ -17,6 +17,7 @@ mysql-connector-python = "==8.0.15"
 beem = "==0.20.18"
 PyMySQL= "==0.9.3"
 mysqlclient= "==1.4.2.post1"
+uwsgi = "*"
 
 [requires]
 python_version = "3.7"
