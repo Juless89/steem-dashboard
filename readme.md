@@ -1,4 +1,4 @@
-# STEEM Dashboard
+# STEEM Dashboard v1.0.0
 
 Dashboard application for analysing and charting transactions and operations from the STEEM Blockchain.
 

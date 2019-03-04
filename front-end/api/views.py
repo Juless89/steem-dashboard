@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 
 import json
 
+# convert string to time delta
 def get_start_day(period, end):
     if period == 'ALL':
         return None
@@ -23,17 +24,19 @@ def get_start_day(period, end):
     elif period == '1H':
         return end - timedelta(hours=1)
 
+# API for vote count chart data
 class VotesCountData(APIView):
     # Unused user authentication classes
     authentication_classes = []
     permission_classes = []
 
-    # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
+        # get resolution and period
         delta = kwargs['delta']
         period = kwargs['period']
         end = datetime.now()
 
+        # retrieve correct model
         if delta == 'minute':
             self.model = votes_count_minute
         elif delta == 'hour':
@@ -41,21 +44,26 @@ class VotesCountData(APIView):
         elif delta == 'day':
             self.model = votes_count_day
 
+        # calculate start
         start = get_start_day(period, end)
 
+        # ALL or specific periode
         if start:
             ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         else:
             ticker = self.model.objects.all().order_by('timestamp')
         serializer = VotesCount(ticker, many=True)
+
+
         x = []
         y = []
 
-        # Omit last result
+        # Omit last result, append data into lists
         for row in serializer.data[:-1]:
             x.append(row['timestamp'])
             y.append(row['count'])
 
+        # datastruct for response
         data = {
             "label": '# of Votes',
             "labels": x,
@@ -69,12 +77,13 @@ class TransfersCountData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
+        # get resolution and period
         delta = kwargs['delta']
         period = kwargs['period']
         end = datetime.now()
 
+        # retrieve correct model
         if delta == 'minute':
             self.model = transfers_count_minute
             start = end - timedelta(hours=1)
@@ -85,21 +94,25 @@ class TransfersCountData(APIView):
             self.model = transfers_count_day
             start = end - timedelta(days=60)
 
+        # calculate start
         start = get_start_day(period, end)
 
+        # ALL or specific period
         if start:
             ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         else:
             ticker = self.model.objects.all().order_by('timestamp')
         serializer = TransfersCount(ticker, many=True)
+
         x = []
         y = []
 
-        # Omit last result
+        # Omit last result, append data into lists
         for row in serializer.data[:-1] :
             x.append(row['timestamp'])
             y.append(row['count'])
 
+        # datastruct for response
         data = {
             "label": '# of Transfers',
             "labels": x,
@@ -113,12 +126,13 @@ class ClaimRewardsCountData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
+        # get resolution and period
         delta = kwargs['delta']
         period = kwargs['period']
         end = datetime.now()
 
+        # retrieve correct model
         if delta == 'minute':
             self.model = claim_rewards_count_minute
             start = end - timedelta(hours=1)
@@ -129,21 +143,26 @@ class ClaimRewardsCountData(APIView):
             self.model = claim_rewards_count_day
             start = end - timedelta(days=60)
 
+        # calculate start
         start = get_start_day(period, end)
 
+
+        # ALL or specific period
         if start:
             ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
         else:
             ticker = self.model.objects.all().order_by('timestamp')
         serializer = TransfersCount(ticker, many=True)
+        
         x = []
         y = []
 
-        # Omit last result
+        # Omit last result, append data into lists
         for row in serializer.data[:-1]:
             x.append(row['timestamp'])
             y.append(row['count'])
 
+        # datastruct for response
         data = {
             "label": '# of Claim rewards',
             "labels": x,
@@ -157,12 +176,13 @@ class VotesSumData(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
+        # resolution and type of analysis
         resolution = kwargs['resolution']
         analytics = kwargs['analytics']
         self.model = votes_count_sum
 
+        # retrieve data from db and serialze
         ticker = self.model.objects.filter(resolution=resolution, analyses=analytics).order_by('-timestamp')[:1]
         serializer = VotesSum(ticker, many=True)
 
@@ -173,10 +193,11 @@ class GeneralStats(APIView):
     authentication_classes = []
     permission_classes = []
 
-    # Retrieve STEEM and SBD market prices, return a dict
     def get(self, request, format=None, *args, **kwargs):
+        # operation type
         operation = kwargs['operation']
 
+        # retrieve correct model 
         if operation == 'votes':
             self.model = votes
         elif operation == 'transfers':
@@ -184,9 +205,11 @@ class GeneralStats(APIView):
         elif operation == 'claim_rewards':
             self.model = claim_rewards
 
+        # timne period
         end = datetime.now()
         start = end - timedelta(days=1)
 
+        # Retrieve all period and caculate changes
         count = self.model.objects.filter(timestamp__range=(start, end)).count()
         previous_count = self.model.objects.filter(
             timestamp__range=(start - timedelta(days=1), start)).count(
@@ -195,10 +218,12 @@ class GeneralStats(APIView):
             timestamp__range=(end - timedelta(days=30), end - timedelta(days=29))).count(
         )
 
+        # retrieve latest block_num
         self.model = blocks 
         ticker = self.model.objects.all().order_by('-block_num')[:1]
         block = Blocks(ticker, many=True)
 
+        # response datastruct
         data = {
             "operations": count,
             "block_num": block.data,

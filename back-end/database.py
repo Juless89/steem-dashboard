@@ -15,6 +15,7 @@ class Database():
         self.buffer = []
         self.query = None
 
+    # retrieve settings from settings.cnf
     def connect_to_db(self):
         self.db = MySQLdb.connect(
             host="localhost",
@@ -22,55 +23,60 @@ class Database():
             passwd=config.get('client', 'password'),
             db=config.get('client', 'database'),
         )
+
+        # create curser
         self.cur = self.db.cursor()
 
+    # close
     def close_connection(self):
         self.cur.close()
         self.db.close()
 
+    # add new block
     def add_block(self, num, timestamp):
         query = (f"INSERT INTO `api_blocks` (`id`, `block_num`, `timestamp`) VALUES (NULL, '{num}', '{timestamp}')")
         self.post_data(query, 'api_blocks')
 
+    # add vote operatio 
     def add_vote(self, voter, author, permlink, weight, timestamp, value=0):
         query = (f"INSERT INTO `api_votes` (`id`, `voter`, `author`, `permlink`, `weight`, `value`, `timestamp`) VALUES (NULL, '{voter}', '{author}', '{permlink}', '{weight}', '{value}', '{timestamp}')")
         self.buffer.append(query)
 
+    # add transfer operation
     def add_transfer(self, sender, receiver, amount, precision, nai, timestamp):
         query = (f"INSERT INTO `api_transfers` (`id`, `sender`, `receiver`, `amount`, `precision`, `nai`, `timestamp`) VALUES (NULL, '{sender}', '{receiver}', '{amount}', '{precision}', '{nai}', '{timestamp}')")
         self.buffer.append(query)
 
+    # add claim reward
     def add_claim_reward(self, account, reward_steem, reward_sbd, reward_vests, timestamp):
         query = (f"INSERT INTO `api_claim_rewards` (`id`, `account`, `reward_steem`, `reward_sbd`, `reward_vests`, `timestamp`) VALUES (NULL, '{account}', '{reward_steem}', '{reward_sbd}', '{reward_vests}', '{timestamp}')")
         self.buffer.append(query)
 
+    # get block by number
     def get_block(self, num):
         query = (f"SELECT `*` FROM `api_blocks` WHERE `number` = '{num}'")
 
         return self.get_data(query)
 
+    # get highest block by number
     def get_last_block(self):
         query = ("SELECT `block_num` FROM api_blocks order by `block_num` desc limit 1;")
 
         return self.get_data(query)
 
+    # get votes between period start - end
     def get_votes(self, start, end):
         query = f"SELECT `voter`, `author` FROM `api_votes` WHERE `timestamp` BETWEEN '{start}' AND '{end}'"
 
         return self.get_data(query)
 
+    # count all votes
     def get_votes_count(self, table):
         query = (f"SELECT `*` FROM `{table}`")
 
         return self.get_data(query)
 
-    def update_signal(self, mail_id):
-        query = (
-            "UPDATE `signals` SET `processed` = 'yes' WHERE " +
-            f"`signals`.`mail_id` = {mail_id};")
-
-        self.post_data(query, 'signals')
-
+    # Construct query and add analyses to db
     def add_analyses(self, table, **kwargs):
         head = f"INSERT INTO `{table}` (`id`"
 

@@ -7,12 +7,13 @@ from database import Database
 
 import threading
 import sys
-# import time
 
 if __name__ == "__main__":
     scraping = False
     valid = 0
     settings = {}
+
+    # check for correct system arguments
     if len(sys.argv) == 4:
         block_num = sys.argv[1]
         block_count = sys.argv[2]
@@ -25,7 +26,7 @@ if __name__ == "__main__":
             scraping = True
             valid = 1
         else:
-            print('String')
+            print('User a number')
     elif len(sys.argv) == 1:
         valid = 1
     else:
@@ -62,15 +63,3 @@ if __name__ == "__main__":
             transfers.start()
         else:
             print('Set start block')
-
-    # Track memory usage and difference
-    """
-    tr = tracker.SummaryTracker()
-    while True:
-        time.sleep(5)
-        sum1 = summary.summarize(muppy.get_objects())
-        summary.print_(sum1)
-        print('\n\n\n')
-        #tr.print_diff()
-        #print('\n\n\n')
-    """

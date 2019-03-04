@@ -47,7 +47,7 @@ function plot_graph(data){
 
 // Get the current settings from the user to highlight
 // the corrent buttons.
-function active_graph() {
+function active_buttons() {
     // chart resolution
     id = '#' + Cookies.get('chart')
     $(id).addClass("active");
@@ -208,19 +208,19 @@ $(document).ready(function() {
         Cookies.set('chart', 'minute', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#hour").click(function(){
         Cookies.set('chart', 'hour', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#day").click(function(){
         Cookies.set('chart', 'day', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
 
     // chart periods
@@ -228,37 +228,37 @@ $(document).ready(function() {
         Cookies.set('period', 'ALL', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#30D").click(function(){
         Cookies.set('period', '30D', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#7D").click(function(){
         Cookies.set('period', '7D', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#24H").click(function(){
         Cookies.set('period', '24H', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#12H").click(function(){
         Cookies.set('period', '12H', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#1H").click(function(){
         Cookies.set('period', '1H', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
 
     // tables
@@ -266,30 +266,30 @@ $(document).ready(function() {
         Cookies.set('table_period', 'month', { expires: 7, path: '' });
         get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#table_week").click(function(){
         Cookies.set('table_period', 'week', { expires: 7, path: '' });
         get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#table_day").click(function(){
         Cookies.set('table_period', 'day', { expires: 7, path: '' });
         get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#author").click(function(){
         Cookies.set('analytics', 'author', { expires: 7, path: '' });
         get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
     $("#voter").click(function(){
         Cookies.set('analytics', 'voter', { expires: 7, path: '' });
         get_table('api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period'));
         $('.btn-sm').removeClass("active")
-        active_graph()
+        active_buttons()
     });
 });

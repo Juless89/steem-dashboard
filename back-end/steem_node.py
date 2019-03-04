@@ -25,6 +25,7 @@ class Node(threading.Thread):
         self.block_count = 10**9
         self.s_time = datetime.now()
 
+        # set scraping mode variables
         if len(kwargs) > 0:
             print(kwargs)
             self.scraping = kwargs['scraping']
@@ -44,6 +45,8 @@ class Node(threading.Thread):
         # Extract block_num and timestamp.
         timestamp = block['timestamp']
         block_num = block['block_num']
+
+        # calculate avg block processing speed
         c_time = datetime.now()
         speed = int(self.counter/(c_time-self.s_time).total_seconds())
         print(block_num, timestamp, f'avg Block/s: {speed}    ', end='\r')
@@ -66,6 +69,7 @@ class Node(threading.Thread):
                 except Exception:
                     continue
 
+        # In scarping mode make less block inserts into the db
         if self.scraping:
             self.block_counter += 1
             if self.block_counter % 1000 == 0:
@@ -74,6 +78,7 @@ class Node(threading.Thread):
             self.db.add_block(block_num, timestamp)
 
     def run(self):
+        # check if block_num is set, else retrieve form db
         if not self.block_num:
             data = self.db.get_last_block()
             if len(data) > 0:

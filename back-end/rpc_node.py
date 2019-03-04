@@ -23,6 +23,8 @@ class Sorter(threading.Thread):
 
     def run(self):
         while True:
+            # as long as there are blocks in the queue, pop each 
+            # block from the queue and sort into the buffer
             if len(self.queue) > 0:
                 try:
                     self.lock.acquire()
@@ -35,6 +37,9 @@ class Sorter(threading.Thread):
                 finally:
                     self.lock.release()
 
+            # check for blocks in the buffer and the current length of the 
+            # blocks queue. If there is room check for the current block
+            # to pop from the buffer into the work queue
             if len(self.buffer) > 0 and len(self.blocks_queue) <= 5*self.n:
                 try:
                     block = self.buffer.pop(self.num+1, None)
