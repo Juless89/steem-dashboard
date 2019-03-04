@@ -3,7 +3,7 @@
 function plot_graph(data){
     // canvas
     $("canvas#chart").remove();
-    $("#chart_canvas").append('<canvas id="chart" width="400" height="200"></canvas>');
+    $("#chart_canvas").append('<canvas id="chart" width="400" height="150"></canvas>');
 
     // new chart
     var ctx = document.getElementById("chart").getContext('2d');

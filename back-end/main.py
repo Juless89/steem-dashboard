@@ -54,7 +54,7 @@ if __name__ == "__main__":
         # check for start block
         db = Database()
         data = db.get_last_block()
-        if len(data) > 0:
+        if len(data) > 0 or settings.pop('block_num', None):
             # start all threads
             node.start()
             votes.start()

@@ -14,3 +14,4 @@ front-end/pages/migrations/__pycache__/
 staticfiles/
 media/
 uwsgi_params
+readme.md
