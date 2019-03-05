@@ -113,7 +113,9 @@ class Database():
                 self.cur.execute(query)
             else:
                 for qry in query:
-                    self.cur.execute(qry)
+                    cur = self.db.cursor()
+                    cur.execute(qry)
+                    cur.close()
 
             # Release table
             self.cur.execute(f"UNLOCK TABLES;")

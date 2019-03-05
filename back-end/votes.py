@@ -45,12 +45,12 @@ class Votes(threading.Thread):
                 self.counter.dump_data()
                 self.db.dump('api_votes')
             else:
-                # For each minute of data processed upload the data into the
+                # For each hour of data processed upload the data into the
                 # database and clear the buffers.
-                if self.timestamp.minute != self.minute:
+                if self.timestamp.hour != self.hour:
                     self.counter.dump_data()
                     self.db.dump('api_votes')
-                    self.minute = self.timestamp.minute
+                    self.hour = self.timestamp.hour
         # deconstruct operation and prepare for storing
         else:
             voter = vote['value']['voter']

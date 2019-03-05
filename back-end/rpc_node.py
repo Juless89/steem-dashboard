@@ -23,6 +23,11 @@ class Sorter(threading.Thread):
 
     def run(self):
         while True:
+            print()
+            print(f'Queue: {len(self.queue)}')
+            print(f'Buffer: {len(self.buffer)}')
+            print(f'Process: {len(self.blocks_queue)}')
+            print()
             # as long as there are blocks in the queue, pop each 
             # block from the queue and sort into the buffer
             if len(self.queue) > 0:
@@ -40,7 +45,7 @@ class Sorter(threading.Thread):
             # check for blocks in the buffer and the current length of the 
             # blocks queue. If there is room check for the current block
             # to pop from the buffer into the work queue
-            if len(self.buffer) > 0 and len(self.blocks_queue) <= 5*self.n:
+            if len(self.buffer) > 0:
                 try:
                     block = self.buffer.pop(self.num+1, None)
                     while block is not None:
@@ -130,12 +135,12 @@ class Blocks(threading.Thread):
                             self.num += self.n
                     except Exception as e:
                         print('add_block', e)
-                    time.sleep(0.10)
+                    time.sleep(0.20)
                 except Exception as e:
                     print(e)
                     time.sleep(1)
             else:
-                time.sleep(0.1)
+                time.sleep(0.2)
 
 
 # Main thread used to manage all block gathering threads and the sorter.
