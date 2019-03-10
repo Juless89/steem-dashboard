@@ -46,6 +46,7 @@ class Sorter(threading.Thread):
                             self.buffer[block_num] = data
                     except Exception as e:
                         print()
+                        print('failed to load data')
                         print(e)
                     finally:
                         self.lock.release()
@@ -68,6 +69,7 @@ class Sorter(threading.Thread):
                                     block = self.buffer.pop(self.num, None)
                                 except Exception as e:
                                     print()
+                                    print('failed to acquire lock')
                                     print(e)
                                 finally:
                                     self.blocks_queue_lock.release()
@@ -75,6 +77,8 @@ class Sorter(threading.Thread):
                             if block == None:
                                 loop = 0
                     except Exception as e:
+                        print()
+                        print('failed to pop block')
                         print(e)
                         continue
             except Exception as e:

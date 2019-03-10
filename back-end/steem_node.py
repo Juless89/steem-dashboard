@@ -1,6 +1,6 @@
 from database import Database
 from rpc_node import RPC_node
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import threading
 import time
@@ -24,14 +24,16 @@ class Node(threading.Thread):
         self.n_threads = 2
         self.block_count = 10**9
         self.s_time = datetime.now()
+        self.end = None
 
         # set scraping mode variables
         if len(kwargs) > 0:
-            print(kwargs)
             self.scraping = kwargs['scraping']
             self.block_num = kwargs['block_num']
             self.n_threads = kwargs['n_threads']
             self.block_count = kwargs['block_count']
+            print(f'Start: {self.block_num}\nBlocks: {self.block_count}\
+                \nThreads: {self.n_threads}\nScrape: {self.scraping}\n')
 
     # To prevent build up with the database check if all previous operations
     # have already been stored.
@@ -49,7 +51,12 @@ class Node(threading.Thread):
         # calculate avg block processing speed
         c_time = datetime.now()
         speed = int(self.counter/(c_time-self.s_time).total_seconds())
-        print(block_num, timestamp, f'avg Block/s: {speed}    ', end='\r')
+
+        if speed == 0:
+            eta = 0
+        else:
+            eta = int((self.end-block_num)/speed)
+        print(block_num, timestamp, f'avg Block/s: {speed} ETA: {str(timedelta(seconds=eta))}      ', end='\r')
 
         # Write header for each new block.
         header = {
@@ -95,6 +102,8 @@ class Node(threading.Thread):
             blocks_queue_lock=self.blocks_queue_lock,
         )
         rpc.start()
+
+        self.end = start_block + self.block_count
 
         while True:
             # check for new blocks

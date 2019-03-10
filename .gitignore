@@ -15,3 +15,6 @@ staticfiles/
 media/
 uwsgi_params
 updates/
+back-end/temp/api_claim_rewards.csv
+back-end/temp/api_transfers.csv
+back-end/temp/api_votes.csv

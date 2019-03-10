@@ -156,12 +156,6 @@ class Database():
         except Exception:
             pass
 
-        #print('\n')
-        #print(f'Stored: {table}.csv')
-        #print('\n')
-        #self.post_data(self.buffer, table, True)
-        #for query in self.buffer:
-            #self.post_data(query, table)
         self.buffer.clear()
 
     # Insert date, amount into table 'table'. Look if the record already
