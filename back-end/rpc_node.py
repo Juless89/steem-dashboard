@@ -110,7 +110,7 @@ class Blocks(threading.Thread):
 
         try:
             # perform and decode request
-            r = self.http.request('POST', 'https://api.steemit.com/', body=json.dumps(PARAMS).encode())
+            r = self.http.request('POST', url, body=json.dumps(PARAMS).encode())
 
             data = json.loads(r.data.decode())
 

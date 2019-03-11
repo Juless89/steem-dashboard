@@ -46,10 +46,10 @@ if __name__ == "__main__":
         node = Node(arrays, lock, **settings)
 
         # processing threads for each operation type
-        votes = Votes(arrays['vote_operation'], lock, scraping)
-        transfers = Transfers(arrays['transfer_operation'], lock, scraping)
+        votes = Votes('api_votes', arrays['vote_operation'], lock, scraping)
+        transfers = Transfers('api_transfers' ,arrays['transfer_operation'], lock, scraping)
         claim_rewards = Claim_rewards(
-            arrays['claim_reward_balance_operation'], lock, scraping
+            'api_claim_rewards', arrays['claim_reward_balance_operation'], lock, scraping
         )
 
         # check for start block

@@ -1,4 +1,4 @@
-# SteemChain v1.0.0
+# SteemChain v1.1.0
 
 Dashboard application for analysing and charting transactions and operations from the STEEM Blockchain.
 
@@ -70,7 +70,8 @@ password =
 
 When everything is done correctly the models can be migrated
 ```
-python front-end/manage.py migrate
+cd front-end
+python manage.py migrate
 
 ```
 
@@ -79,7 +80,7 @@ python front-end/manage.py migrate
 Run the Django server as is or set up with a custom webserver.
 
 ```
-python front-end/manage.py runserver 0.0.0.0:8000
+python manage.py runserver 0.0.0.0:8000
 ```
 
 The back end has can be used in head mode or scraping mode. Head mode continues from the last collected block updates the database on every block and only uses 1 thread. The scraping requires: start block, amount of blocks and amount of threads to be used. 
