@@ -62,7 +62,11 @@ class Votes(threading.Thread):
             # Allow for multiple resolutions
             hour = self.timestamp.hour
             minute = self.timestamp.minute
-            self.counter.set_resolutions(hour, minute)
+
+            data = {
+                "count": 1,
+            }
+            self.counter.set_resolutions(hour, minute, **data)
 
     def run(self):
         while True:
@@ -72,8 +76,8 @@ class Votes(threading.Thread):
                 try:
                     self.lock.acquire()
                     votes = self.storage[:]
-                finally:
                     self.storage.clear()
+                finally:
                     self.lock.release()
 
                     # process each operation

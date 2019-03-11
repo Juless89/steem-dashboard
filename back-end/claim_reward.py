@@ -64,7 +64,19 @@ class Claim_rewards(threading.Thread):
             # Allow for multiple resolutions
             hour = self.timestamp.hour
             minute = self.timestamp.minute
-            self.counter.set_resolutions(hour, minute)
+
+            steem = float(reward_steem)
+            sbd = float(reward_sbd)
+            vests = float(reward_vests)
+
+            data = {
+                "count": 1,
+                "steem": steem,
+                "sbd": sbd,
+                "vests": vests,
+            }
+            
+            self.counter.set_resolutions(hour, minute, **data)
 
     def run(self):
         while True:

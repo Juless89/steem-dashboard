@@ -155,7 +155,6 @@ class Database():
             self.insert_file_into_db(path, table)
         except Exception:
             pass
-
         self.buffer.clear()
 
     # Insert date, amount into table 'table'. Look if the record already
@@ -214,17 +213,56 @@ class Database():
             self.close_connection()
             return rows
 
-    # Retrieve current amount value, add new and update the record
-    def update_record(self, amount, timestamp, table):
-        # retrieve current value for amount
-        self.cur.execute(f"SELECT `count` FROM `{table}` "
-                        f"WHERE `timestamp` = '{timestamp}';")
-        total = amount + self.cur.fetchone()[0]
+    # Retrieve current values, add new and update the record.
+    # Variables are passed inside data as a dict, the query is then
+    # created depening on which values are to be stored
+    def update_record(self, data, timestamp, table):
+        # when only count tracked
+        if len(data) == 1:
+            # retrieve current value for amount
+            self.cur.execute(f"SELECT `count` FROM `{table}` "
+                            f"WHERE `timestamp` = '{timestamp}';")
+            
+            total = data['count'] + self.cur.fetchone()[0]
 
-        # update the record
-        query = f"UPDATE `{table}` SET `count` = {total} WHERE " \
-                f"`{table}`.`timestamp` = '{timestamp}';"
-        self.cur.execute(query)
+            # update the record
+            query = f"UPDATE `{table}` SET `count` = {total} WHERE " \
+                    f"`{table}`.`timestamp` = '{timestamp}';"
+            self.cur.execute(query)
+        # construct dynamic query
+        else:
+            count = 0
+            first = ''
+            second = f" FROM `{table}` WHERE `timestamp` = '{timestamp}';"
+
+            for key, value in data.items():
+                if count == 0:
+                    first = f"SELECT `{key}`"
+                    count += 1
+                else:
+                    first += f", `{key}` "
+
+            self.cur.execute(first + second)
+            values = self.cur.fetchone()
+
+            x = 0
+            for key, value in data.items():
+                data[key] += float(values[x])
+                x += 1
+
+            # update the record
+            count = 0
+            first = f'UPDATE `{table}`'
+            second = f" WHERE `{table}`.`timestamp` = '{timestamp}';"
+
+            for key, value in data.items():
+                if count == 0:
+                    first += f" SET `{key}` = {value}"
+                    count = 1
+                else:
+                    first += f", `{key}` = {value}"
+            
+            self.cur.execute(first + second)
 
     # Check if query comes back with any results
     def check_if_record_exist(self, timestamp, table):
@@ -235,10 +273,27 @@ class Database():
 
     # Insert date, amount into table 'table'. Look if the record already
     # exists, update if needed else add.
-    def insert_selection(self, timestamp, amount, table):
+    def insert_selection(self, timestamp, data, table):
         # sql query used to insert data into the mysql database
-        query = f"INSERT INTO `{table}` (`count`, `timestamp`)" \
-                " VALUES ('{}', '{}');".format(amount, timestamp)
+        #if len(data) == 1:
+        if len(data) == 1:
+            query = f"INSERT INTO `{table}` (`count`, `timestamp`)" \
+                    " VALUES ('{}', '{}');".format(data['count'], timestamp)
+        else:
+            first = f"INSERT INTO `{table}` "
+            second = ""
+
+            count = 0
+            for key, value in data.items():
+                if count == 0:
+                    first += f" (`{key}`"
+                    second += f", `timestamp`) VALUES ('{value}'"
+                    count += 1
+                else:
+                    first += f", `{key}`"
+                    second += f", '{value}'"
+
+            query = first + second + f", '{timestamp}');"
 
         try:
             self.connect_to_db()
@@ -248,7 +303,7 @@ class Database():
 
             # Check if record exists, update if the case. Else create
             if self.check_if_record_exist(timestamp, table):
-                self.update_record(amount, timestamp, table)
+                self.update_record(data, timestamp, table)
             else:
                 self.cur.execute(query)
 

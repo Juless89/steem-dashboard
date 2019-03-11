@@ -65,13 +65,16 @@ class Node(threading.Thread):
             "timestamp": timestamp,
         }
 
+        headers = []
+
         # Check each transactions for operations
         for transaction in block['transactions']:
             for operation in transaction['operations']:
                 # add operation to correct queue
                 try:
-                    if len(self.arrays[operation['type']]) == 0:
+                    if operation['type'] not in headers:
                         self.arrays[operation['type']].append(header)
+                        headers.append(operation['type'])
                     self.arrays[operation['type']].append(operation)
                 except Exception:
                     continue
@@ -110,20 +113,16 @@ class Node(threading.Thread):
             if len(self.blocks_queue) > 0:
                 try:
                     self.blocks_queue_lock.acquire()
+                    self.lock.acquire()
                     # Take out all new blocks at once
                     while (len(self.blocks_queue) > 0):
                         if self.check_buffers:
                             # remove from queue
                             block = self.blocks_queue.pop(0)
 
-                            try:
-                                self.lock.acquire()
-
-                                # process all operations
-                                self.process_transactions(block)
-                            finally:
-                                self.lock.release()
-
+                            # process all operations
+                            #print(block['block_num'])
+                            self.process_transactions(block)
                         else:
                             time.sleep(0.1)
 
@@ -132,6 +131,7 @@ class Node(threading.Thread):
 
                 finally:
                     self.blocks_queue_lock.release()
+                    self.lock.release()
 
             # wait for new blocks
             time.sleep(0.05)

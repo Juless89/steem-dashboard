@@ -1,6 +1,4 @@
-import urllib.request
-import urllib.parse
-import requests
+import urllib3
 import time
 import threading
 import json
@@ -9,6 +7,7 @@ import database
 from datetime import datetime
 
 current_block = None
+urllib3.disable_warnings()
 
 # Sorter thread takes in all blocks from the gathering threads, sorts them
 # in order and passes them on to be processed
@@ -57,24 +56,20 @@ class Sorter(threading.Thread):
                 if len(self.buffer) > 0:
                     try:
                         loop = 1
-                        block = self.buffer.pop(self.num, None)
                         while loop:
-                            while block is not None:
+                            if self.num in self.buffer:
+                                block = self.buffer[self.num]
+                                block['block_num'] = self.num
+                                del self.buffer[self.num]
+
                                 try:
                                     self.blocks_queue_lock.acquire()
-                                    block['block_num'] = self.num
                                     self.blocks_queue.append(block)
                                     self.num += 1
                                     current_block += 1
-                                    block = self.buffer.pop(self.num, None)
-                                except Exception as e:
-                                    print()
-                                    print('failed to acquire lock')
-                                    print(e)
                                 finally:
                                     self.blocks_queue_lock.release()
-                            
-                            if block == None:
+                            else:
                                 loop = 0
                     except Exception as e:
                         print()
@@ -98,48 +93,35 @@ class Blocks(threading.Thread):
         self.base = base
         self.end = end
         self.num = self.base - 1 + self.id
-        self.s = requests.Session()
         self.db = database.Database()
+        self.http = urllib3.PoolManager()
 
     # Perform API call to get block return None for non existing blocks and
     # any exceptions.
     def get_block(self, block_num):
-        while True:
-            try:
-                # API request
-                PARAMS = {
-                    "jsonrpc": "2.0",
-                    "method": "block_api.get_block",
-                    "params": {"block_num": block_num},
-                    "id": 1
-                }
+        # API request
+        PARAMS = {
+            "jsonrpc": "2.0",
+            "method": "block_api.get_block",
+            "params": {"block_num": block_num},
+            "id": 1
+        }
+        url = 'https://api.steemit.com/'
 
-                response = self.s.post(
-                    'https://api.steemit.com/',
-                    data=json.dumps(PARAMS),
-                )
+        try:
+            # perform and decode request
+            r = self.http.request('POST', 'https://api.steemit.com/', body=json.dumps(PARAMS).encode())
 
-                data = response.json()
+            data = json.loads(r.data.decode())
 
-                # Empty result for blocks that do not exist yet, wait 2 seconds,
-                # new block time is 3 seconds.
-                if len(data['result']) == 0:
-                    time.sleep(1)
-                elif 'block' in data['result']:
-                    return data
-
-                time.sleep(1)
-            except Exception as e:
-                message = str(e).strip('\'\"')
-                self.db.add_error(
-                    'api_error_log', **{
-                    "thread": f'Block {self.id}',
-                    "message": message,
-                    "function": "get_block",
-                    "data": json.dumps(data),
-                    "block_num": self.num,
-                    "timestamp": datetime.now()
-                })
+            # Empty result for blocks that do not exist yet, wait 2 seconds,
+            # new block time is 3 seconds.
+            if len(data['result']) == 0:
+                time.sleep(2)
+                return None
+            return data
+        except Exception:
+            return None
 
     # Add block to the queue, store block number and block data
     def add_block(self, data, block_num):
@@ -151,7 +133,6 @@ class Blocks(threading.Thread):
                 self.queue.append({
                     "block_num": block_num,
                     "data": data['result']['block'],
-                    #"data": {},
                 })
                 loop = 0
             except Exception as e:
@@ -168,7 +149,7 @@ class Blocks(threading.Thread):
         global current_block
         while self.num <= self.end:
             try:
-                if self.num <= current_block + self.n * 5:
+                if self.num <= current_block + self.n * 10:
                     try:
                         # retrieve block via api
                         data = self.get_block(self.num)
@@ -179,17 +160,17 @@ class Blocks(threading.Thread):
                                 self.num += self.n
                         except Exception as e:
                             print()
-                            print('add_block', e)
+                            print('Failed to add block', e)
                         time.sleep(0.20)
                     except Exception as e:
                         print()
-                        print(e)
+                        print('Failed to get block', e)
                         time.sleep(1)
                 else:
                     time.sleep(1)
             except Exception as e:
                 print()
-                print('Worker died, get back to work', e)
+                print('Worker thread died, get back to work', e)
 
 
 

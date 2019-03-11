@@ -65,7 +65,22 @@ class Transfers(threading.Thread):
             # Allow for multiple resolutions
             hour = self.timestamp.hour
             minute = self.timestamp.minute
-            self.counter.set_resolutions(hour, minute)
+
+            steem = 0
+            sbd = 0
+
+            if nai == "@@000000021":
+                steem += float(amount)
+            elif nai == "@@000000013":
+                sbd += float(amount)
+
+            data = {
+                "count": 1,
+                "steem": steem,
+                "sbd": sbd,
+            }
+
+            self.counter.set_resolutions(hour, minute, **data)
 
     def run(self):
         while True:
