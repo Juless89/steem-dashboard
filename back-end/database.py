@@ -1,6 +1,7 @@
 import pymysql
 import configparser
 import pandas as pd
+import os
 
 
 config = configparser.ConfigParser()
@@ -134,7 +135,12 @@ class Database():
 
     # Execute all stored sql queries at once
     def dump(self, table):
-        path = "/root/steem-dashboard/back-end/temp/" + table + ".csv"
+        # location to to file inside /tmp
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        path = base_dir + "/back-end/temp/" + table + ".csv"
+
+
+        # Order of values for each operation type
         if table == 'api_votes':
             columns = ['id', 'voter', 'author', 'permlink', 'weight', 'value', 'timestamp']
         elif table == 'api_transfers':
@@ -142,9 +148,13 @@ class Database():
         elif table == 'api_claim_rewards':
             columns = ['id', 'account', 'reward_steem', 'reward_sbd', 'reward_vests', 'timestamp']
 
+        # create dataframe from buffered values 
         df = pd.DataFrame(self.buffer)
         try:
+            # reorder colums in dataframe
             df = df[columns]
+
+            # write data to csv file
             df.to_csv(
                 path,
                 encoding='utf-8',
@@ -152,9 +162,13 @@ class Database():
                 doublequote = True,
                 sep=',', index=False
             )
+
+            # upload csv file into db
             self.insert_file_into_db(path, table)
         except Exception:
             pass
+
+        # clear buffer
         self.buffer.clear()
 
     # Insert date, amount into table 'table'. Look if the record already
@@ -217,9 +231,9 @@ class Database():
     # Variables are passed inside data as a dict, the query is then
     # created depening on which values are to be stored
     def update_record(self, data, timestamp, table):
-        # when only count tracked
+        # for 1 value
         if len(data) == 1:
-            # retrieve current value for amount
+            # get current value
             self.cur.execute(f"SELECT `count` FROM `{table}` "
                             f"WHERE `timestamp` = '{timestamp}';")
             
@@ -229,12 +243,13 @@ class Database():
             query = f"UPDATE `{table}` SET `count` = {total} WHERE " \
                     f"`{table}`.`timestamp` = '{timestamp}';"
             self.cur.execute(query)
-        # construct dynamic query
+        # for multiple values
         else:
             count = 0
             first = ''
             second = f" FROM `{table}` WHERE `timestamp` = '{timestamp}';"
 
+            # sort through dict and construct query
             for key, value in data.items():
                 if count == 0:
                     first = f"SELECT `{key}`"
@@ -243,8 +258,9 @@ class Database():
                     first += f", `{key}` "
 
             self.cur.execute(first + second)
-            values = self.cur.fetchone()
 
+            # add current values to new values
+            values = self.cur.fetchone()
             x = 0
             for key, value in data.items():
                 data[key] += float(values[x])
@@ -255,6 +271,7 @@ class Database():
             first = f'UPDATE `{table}`'
             second = f" WHERE `{table}`.`timestamp` = '{timestamp}';"
 
+            # sort through dict and construct query
             for key, value in data.items():
                 if count == 0:
                     first += f" SET `{key}` = {value}"
@@ -275,14 +292,18 @@ class Database():
     # exists, update if needed else add.
     def insert_selection(self, timestamp, data, table):
         # sql query used to insert data into the mysql database
-        #if len(data) == 1:
+        
+        # for 1 value
         if len(data) == 1:
             query = f"INSERT INTO `{table}` (`count`, `timestamp`)" \
                     " VALUES ('{}', '{}');".format(data['count'], timestamp)
+
+        # for multiple values
         else:
             first = f"INSERT INTO `{table}` "
             second = ""
 
+            # sort through dict and construct sql query
             count = 0
             for key, value in data.items():
                 if count == 0:
@@ -293,6 +314,7 @@ class Database():
                     first += f", `{key}`"
                     second += f", '{value}'"
 
+            # query
             query = first + second + f", '{timestamp}');"
 
         try:
