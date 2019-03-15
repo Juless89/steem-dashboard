@@ -83,6 +83,11 @@ class Database():
         }
         self.buffer.append(query)
 
+    # add generic operation
+    def add_operation(self, **kwargs):
+        kwargs['id'] = 'NULL'
+        self.buffer.append(kwargs)
+
     # add claim reward
     def add_claim_reward(self, account, reward_steem, reward_sbd, reward_vests, timestamp):
         query = {
@@ -147,6 +152,62 @@ class Database():
             columns = ['id', 'sender', 'receiver', 'amount', 'precision', 'nai', 'timestamp']
         elif table == 'api_claim_rewards':
             columns = ['id', 'account', 'reward_steem', 'reward_sbd', 'reward_vests', 'timestamp']
+        elif table == 'api_custom_json_operation':
+            columns = ['id', 'value_id', 'json', 'timestamp']
+        elif table == 'api_comment_operation':
+            columns = ['id', 'author', 'permlink', 'timestamp']
+        elif table == 'api_comment_options_operation':
+            columns = ['id', 'author', 'permlink', 'timestamp']
+        elif table == 'api_account_update_operation':
+            columns = ['id', 'account', 'timestamp']
+        elif table == 'api_delegate_vesting_shares_operation':
+            columns = ['id', 'delegator', 'delegatee', 'amount', 'timestamp']
+        elif table == 'api_transfer_to_vesting_operation':
+            columns = ['id', 'value_from', 'value_to', 'amount', 'timestamp']
+        elif table == 'api_account_witness_vote_operation':
+            columns = ['id', 'account', 'witness', 'approve', 'timestamp']
+        elif table == 'api_feed_publish_operation':
+            columns = ['id', 'publisher', 'timestamp']
+        elif table == 'api_limit_order_create_operation':
+            columns = ['id', 'owner', 'amount', 'nai', 'timestamp']
+        elif table == 'api_limit_order_cancel_operation':
+            columns = ['id', 'owner', 'timestamp']
+        elif table == 'api_delete_comment_operation':
+            columns = ['id', 'author', 'permlink', 'timestamp']
+        elif table == 'api_account_create_with_delegation_operation':
+            columns = ['id', 'creator', 'new_account_name', 'timestamp']
+        elif table == 'api_account_create_operation':
+            columns = ['id', 'creator', 'new_account_name', 'timestamp']
+        elif table == 'api_withdraw_vesting_operation':
+            columns = ['id', 'account', 'amount', 'timestamp']
+        elif table == 'api_transfer_from_savings_operation':
+            columns = ['id', 'value_from', 'value_to', 'amount', 'nai', 'timestamp']
+        elif table == 'api_transfer_to_savings_operation':
+            columns = ['id', 'value_from', 'value_to', 'amount', 'nai', 'timestamp']
+        elif table == 'api_cancel_transfer_from_savings_operation':
+            columns = ['id', 'account', 'timestamp']
+        elif table == 'api_witness_update_operation':
+            columns = ['id', 'owner', 'timestamp']
+        elif table == 'api_account_witness_proxy_operation':
+            columns = ['id', 'account', 'proxy', 'timestamp']
+        elif table == 'api_custom_operation':
+            columns = ['id', 'timestamp']
+        elif table == 'api_set_withdraw_vesting_route_operation':
+            columns = ['id', 'from_account', 'to_account', 'timestamp']
+        elif table == 'api_recover_account_operation':
+            columns = ['id', 'account_to_recover', 'timestamp']
+        elif table == 'api_request_account_recovery_operation':
+            columns = ['id', 'recovery_account', 'account_to_recover', 'timestamp']
+        elif table == 'api_convert_operation':
+            columns = ['id', 'owner', 'amount', 'nai', 'timestamp']
+        elif table == 'api_escrow_release_operation':
+            columns = ['id', 'from_account', 'to_account', 'agent', 'who', 'receiver', 'sbd', 'steem', 'timestamp']
+        elif table == 'api_escrow_approve_operation':
+            columns = ['id', 'from_account', 'to_account', 'agent', 'who', 'timestamp']
+        elif table == 'api_escrow_transfer_operation':
+            columns = ['id', 'from_account', 'to_account', 'agent', 'fee', 'sbd', 'steem', 'timestamp']
+        elif table == 'api_change_recovery_account_operation':
+            columns = ['id', 'account_to_recover', 'new_recovery_account', 'timestamp']
 
         # create dataframe from buffered values 
         df = pd.DataFrame(self.buffer)
@@ -343,7 +404,9 @@ class Database():
         try:
             self.connect_to_db()
             self.cur.execute(load_sql)
-        except Exception:
+        except Exception as e:
+            print()
+            print(e)
             pass
         finally:
             # clonse connection

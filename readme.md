@@ -83,11 +83,12 @@ Run the Django server as is or set up with a custom webserver.
 python manage.py runserver 0.0.0.0:8000
 ```
 
-The back end has can be used in head mode or scraping mode. Head mode continues from the last collected block updates the database on every block and only uses 1 thread. The scraping requires: start block, amount of blocks and amount of threads to be used. 
+The back end has can be used in head mode or scraping mode. Head mode continues from the last collected block updates the database on every block and only uses 1 thread. The scraping requires: start block, amount of blocks and amount of threads to be used. For scarping a temp folder is required.
 
 
 ```
 cd back-end
+mkdir temp
 
 # scrape mode
 python main.py 30000000 28800 32
