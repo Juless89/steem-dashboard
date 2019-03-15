@@ -1,4 +1,4 @@
-# SteemChain v1.1.0
+# SteemChain v1.2.1
 
 Dashboard application for analysing and charting transactions and operations from the STEEM Blockchain.
 
