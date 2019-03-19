@@ -15,6 +15,10 @@ def get_start_day(period, end):
         return None
     if period == '30D':
         return end - timedelta(days=30)
+    elif period == '90D':
+        return end - timedelta(days=90)
+    elif period == '1Y':
+        return end - timedelta(days=365)
     elif period == '7D':
         return end - timedelta(days=7)
     elif period == '24H':
@@ -217,6 +221,9 @@ class GeneralStats(APIView):
         count_30d = self.model.objects.filter(
             timestamp__range=(end - timedelta(days=30), end - timedelta(days=29))).count(
         )
+        count_365d = self.model.objects.filter(
+            timestamp__range=(end - timedelta(days=365), end - timedelta(days=364))).count(
+        )
 
         # retrieve latest block_num
         self.model = blocks 
@@ -228,7 +235,8 @@ class GeneralStats(APIView):
             "operations": count,
             "block_num": block.data,
             "delta": '{:.2f}'.format((count-previous_count)/previous_count*100),
-            "delta_30d": '{:.2f}'.format((count-count_30d)/count_30d*100)
+            "delta_30d": '{:.2f}'.format((count-count_30d)/count_30d*100),
+            "delta_365d": '{:.2f}'.format((count-count_365d)/count_365d*100),
         }
 
         return Response(data)

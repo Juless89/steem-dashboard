@@ -177,10 +177,12 @@ function update_stats() {
             const block_num = data.block_num[0].block_num
             const delta = data.delta
             const delta_30d = data.delta_30d
+            const delta_365d = data.delta_365d
             const timestamp = data.block_num[0].timestamp
             $("#block_num").text(block_num);
             $("#delta").text(delta + '%')
             $("#delta_30d").text(delta_30d + '%');
+            $("#delta_365d").text(delta_365d + '%');
         },
         error: function(error_data){
             console.log(error_data)
@@ -242,14 +244,14 @@ $(document).ready(function() {
         $('.btn-sm').removeClass("active")
         active_buttons()
     });
-    $("#24H").click(function(){
-        Cookies.set('period', '24H', { expires: 7, path: '' });
+    $("#90D").click(function(){
+        Cookies.set('period', '90D', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_buttons()
     });
-    $("#12H").click(function(){
-        Cookies.set('period', '12H', { expires: 7, path: '' });
+    $("#1Y").click(function(){
+        Cookies.set('period', '1Y', { expires: 7, path: '' });
         get_graph_data(api + Cookies.get('chart') + '/' + Cookies.get('period'));
         $('.btn-sm').removeClass("active")
         active_buttons()

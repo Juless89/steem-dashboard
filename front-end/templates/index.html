@@ -7,12 +7,12 @@
 <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
 
 <nav class="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-sm-3 col-md-1 mr-0" href="/">SteemChain</a>
+  <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="/">SteemChain</a>
 </nav>
 
 <div class="container-fluid">
   <div class="row">
-    <nav class="col-md-1 d-none d-md-block bg-light sidebar">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
         <ul class="nav flex-column">
           <li class="nav-item">
@@ -72,23 +72,24 @@
       </div>
     </nav>
 
-    <main role="main" class="col-md-10 ml-sm-auto col-lg-11 px-4">
+    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Charts</h1>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
-              <button id="1H" type="button" class="btn btn-sm btn-outline-secondary">1H</button>
-              <button id="12H" type="button" class="btn btn-sm btn-outline-secondary">12H</button>
-              <button id="24H" type="button" class="btn btn-sm btn-outline-secondary">24H</button>
               <button id="7D" type="button" class="btn btn-sm btn-outline-secondary">7D</button>
               <button id="30D" type="button" class="btn btn-sm btn-outline-secondary">30D</button>
+              <button id="90D" type="button" class="btn btn-sm btn-outline-secondary">90D</button>
+              <button id="1Y" type="button" class="btn btn-sm btn-outline-secondary">1Y</button>
               <button id="ALL" type="button" class="btn btn-sm btn-outline-secondary">ALL</button>
             </div>
+          <!--
           <div class="btn-group mr-2">
             <button id="minute" type="button" class="btn btn-sm btn-outline-secondary">Minute</button>
             <button id="hour" type="button" class="btn btn-sm btn-outline-secondary">Hour</button>
             <button id="day" type="button" class="btn btn-sm btn-outline-secondary">Day</button>
           </div>
+          -->
           <!--
           <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
             <span data-feather="calendar"></span>
@@ -110,7 +111,7 @@
 
       <div class="container">
           <div class="row justify-content-center">
-              <div class="col-sm-3">
+              <div class="col">
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">Current block</h5>
@@ -118,7 +119,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col">
                 <div class="card">
                   <div class="card-body">
                     <h5 class="card-title">Operations 24H</h5>
@@ -126,7 +127,7 @@
                   </div>
                 </div>
               </div>
-              <div class="col-sm-3">
+              <div class="col">
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">Change 24H</h5>
@@ -134,11 +135,19 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col">
                   <div class="card">
                     <div class="card-body">
                       <h5 class="card-title">Change 30D</h5>
                       <p id="delta_30d" class="card-text"></p>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Change 365D</h5>
+                      <p id="delta_365d" class="card-text"></p>
                     </div>
                   </div>
                 </div>
