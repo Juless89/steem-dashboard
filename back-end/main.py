@@ -1,4 +1,11 @@
-from operations import *
+from operations_account import *
+from operations_comment import *
+from operations_custom import *
+from operations_escrow import *
+from operations_orderbook import *
+from operations_vote import *
+from operations_wallet import *
+from operations_witness import *
 from steem_node import Node
 
 from database import Database

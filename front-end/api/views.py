@@ -197,7 +197,7 @@ class CountData(APIView):
 
         # datastruct for response
         data = {
-            "label": '# of Votes',
+            "label": '# of operations',
             "labels": x,
             "data": y,
         }
