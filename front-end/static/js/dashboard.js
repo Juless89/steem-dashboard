@@ -150,7 +150,7 @@ function set_cookies(){
 
     // chart period
     if (Cookies.get('period') === undefined) {
-        Cookies.set('period', 'ALL', { expires: 7, path: '' });
+        Cookies.set('period', '1Y', { expires: 7, path: '' });
     };
 
     // table period

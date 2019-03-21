@@ -12,66 +12,285 @@
 
 <div class="container-fluid">
   <div class="row">
+    <!-- Sidebar-->
     <nav class="col-md-2 d-none d-md-block bg-light sidebar">
       <div class="sidebar-sticky">
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <!-- Voting CSS-->
+            <span>Voting</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
         <ul class="nav flex-column">
           <li class="nav-item">
             <a id="votes" class="nav-link" href="/votes">
               <span data-feather="home"></span>
-              Votes <span class="sr-only">(current)</span>
+              Vote <span class="sr-only">(current)</span>
+            </a>
+          </li>
+        </ul>
+
+        <!-- Commenting -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Commenting</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
+          <li class="nav-item">
+            <a id="comment_operation" class="nav-link" href="/comment_operation">
+              <span data-feather="file"></span>
+              Comment
             </a>
           </li>
           <li class="nav-item">
+            <a id="comment_options_operation" class="nav-link" href="/comment_options_operation">
+              <span data-feather="file"></span>
+              Comment options
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="delete_comment_operation" class="nav-link" href="/delete_comment_operation">
+              <span data-feather="file"></span>
+              Delete comment
+            </a>
+          </li>
+        </ul>
+
+        <!-- Wallet -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Wallet</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
+          <li class="nav-item">
             <a id="transfers" class="nav-link" href="/transfers">
               <span data-feather="file"></span>
-              Transfers
+              Transfer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="transfer_to_savings_operation" class="nav-link" href="/transfer_to_savings_operation">
+              <span data-feather="file"></span>
+              Transfer to savings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="transfer_from_savings_operation" class="nav-link" href="/transfer_from_savings_operation">
+              <span data-feather="file"></span>
+              Transfer from savings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="cancel_transfer_from_savings_operation" class="nav-link" href="/cancel_transfer_from_savings_operation">
+              <span data-feather="file"></span>
+              Cancel transfer from savings
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="transfer_to_vesting_operation" class="nav-link" href="/transfer_to_vesting_operation">
+              <span data-feather="file"></span>
+              Transfer to vesting
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="withdraw_vesting_operation" class="nav-link" href="/withdraw_vesting_operation">
+              <span data-feather="file"></span>
+              Withdraw vesting
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="set_withdraw_vesting_route_operation" class="nav-link" href="/set_withdraw_vesting_route_operation">
+              <span data-feather="file"></span>
+              Set withdraw vesting route
             </a>
           </li>
           <li class="nav-item">
             <a id="claim_rewards" class="nav-link" href="/claim_rewards">
               <span data-feather="shopping-cart"></span>
-              Claim rewards
+              Claim reward
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="delegate_vesting_shares_operation" class="nav-link" href="/delegate_vesting_shares_operation">
+              <span data-feather="shopping-cart"></span>
+              Delegate vesting shares
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="convert_operation" class="nav-link" href="/convert_operation">
+              <span data-feather="shopping-cart"></span>
+              Convert
             </a>
           </li>
         </ul>
 
-        <!--
+        <!-- Account -->
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
+            <span>Account</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
+          <li class="nav-item">
+            <a id="account_create_operation" class="nav-link" href="/account_create_operation">
+              <span data-feather="file"></span>
+              Create
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="account_create_with_delegation_operation" class="nav-link" href="/account_create_with_delegation_operation">
+              <span data-feather="file"></span>
+              Create with delegation
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="account_update_operation" class="nav-link" href="/account_update_operation">
+              <span data-feather="file"></span>
+              Update
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="account_witness_proxy_operation" class="nav-link" href="/account_witness_proxy_operation">
+              <span data-feather="file"></span>
+              Witness proxy
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="account_witness_vote_operation" class="nav-link" href="/account_witness_vote_operation">
+              <span data-feather="file"></span>
+              Witness vote
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="recover_account_operation" class="nav-link" href="/recover_account_operation">
+              <span data-feather="file"></span>
+              Recover
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="request_account_recovery_operation" class="nav-link" href="/request_account_recovery_operation">
+              <span data-feather="file"></span>
+              Request recovery
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="change_recovery_account_operation" class="nav-link" href="/change_recovery_account_operation">
+              <span data-feather="shopping-cart"></span>
+              Change recovery account
+            </a>
+          </li>
+        </ul>
+
+        <!-- Orderbook -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+          <span>Orderbook</span>
           <a class="d-flex align-items-center text-muted" href="#">
             <span data-feather="plus-circle"></span>
           </a>
         </h6>
-        <ul class="nav flex-column mb-2">
+        <ul class="nav flex-column">
+
+        <li class="nav-item">
+          <a id="limit_order_create_operation" class="nav-link" href="/limit_order_create_operation">
+            <span data-feather="file"></span>
+            Create
+          </a>
+        </li>
+        <li class="nav-item">
+          <a id="limit_order_cancel_operation" class="nav-link" href="/limit_order_cancel_operation">
+            <span data-feather="file"></span>
+            Cancel
+          </a>
+        </li>
+      </ul>
+
+        <!-- Witness -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Witness</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Current month
+            <a id="feed_publish_operation" class="nav-link" href="/feed_publish_operation">
+              <span data-feather="file"></span>
+              Feed publish
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text"></span>
-              Year-end sale
+            <a id="witness_update_operation" class="nav-link" href="/witness_update_operation">
+              <span data-feather="file"></span>
+              Update
             </a>
           </li>
         </ul>
-        -->
+
+        <!-- Custom -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Custom</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
+          <li class="nav-item">
+            <a id="custom_operation" class="nav-link" href="/custom_operation">
+              <span data-feather="file"></span>
+              Custom
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="custom_json_operation" class="nav-link" href="/custom_json_operation">
+              <span data-feather="file"></span>
+              Custom JSON
+            </a>
+          </li>
+        </ul>
+  
+        <!-- Escrow -->
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+            <span>Escrow</span>
+            <a class="d-flex align-items-center text-muted" href="#">
+              <span data-feather="plus-circle"></span>
+            </a>
+          </h6>
+          <ul class="nav flex-column">
+
+          <li class="nav-item">
+            <a id="escrow_transfer_operation" class="nav-link" href="/escrow_transfer_operation">
+              <span data-feather="file"></span>
+              Transfer
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="escrow_approve_operation" class="nav-link" href="/escrow_approve_operation">
+              <span data-feather="file"></span>
+              Approve
+            </a>
+          </li>
+          <li class="nav-item">
+            <a id="escrow_release_operation" class="nav-link" href="/escrow_release_operation">
+              <span data-feather="file"></span>
+              Release
+            </a>
+          </li>
+        </ul>
       </div>
     </nav>
 
+    <!-- Chart -->
     <main role="main" class="col-md-10 ml-sm-auto col-lg-10 px-4">
       <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2">Charts</h1>
@@ -109,6 +328,7 @@
       {% block stats %}
       {% endblock stats %}
 
+      <!-- Stats -->
       <div class="container">
           <div class="row justify-content-center">
               <div class="col">
@@ -154,7 +374,7 @@
             </div>
       </div>
 
-
+    <!-- Analytics -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
       <h2>Analytics</h2>
       <div class="btn-toolbar mb-2 mb-md-0">

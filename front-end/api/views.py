@@ -28,25 +28,153 @@ def get_start_day(period, end):
     elif period == '1H':
         return end - timedelta(hours=1)
 
-# API for vote count chart data
-class VotesCountData(APIView):
+# return count model for operation type
+def get_model_count(operation):
+    if operation == 'votes':
+        return votes_count_day
+    elif operation == 'transfers':
+        return transfers_count_day
+    elif operation == 'claim_rewards':
+        return claim_rewards_count_day
+    elif operation == 'delegate_vesting_shares_operation':
+        return delegate_vesting_shares_operation_count_day
+    elif operation == 'custom_json_operation':
+        return custom_json_operation_count_day
+    elif operation == 'comment_operation':
+        return comment_operation_count_day
+    elif operation == 'comment_options_operation':
+        return comment_options_operation_count_day
+    elif operation == 'account_update_operation':
+        return account_update_operation_count_day
+    elif operation == 'transfer_to_vesting_operation':
+        return transfer_to_vesting_operation_count_day
+    elif operation == 'account_witness_vote_operation':
+        return account_witness_vote_operation_count_day
+    elif operation == 'feed_publish_operation':
+        return feed_publish_operation_count_day
+    elif operation == 'limit_order_create_operation':
+        return limit_order_create_operation_count_day
+    elif operation == 'limit_order_cancel_operation':
+        return limit_order_cancel_operation_count_day
+    elif operation == 'delete_comment_operation':
+        return delete_comment_operation_count_day
+    elif operation == 'account_create_with_delegation_operation':
+        return account_create_with_delegation_operation_count_day
+    elif operation == 'withdraw_vesting_operation':
+        return withdraw_vesting_operation_count_day
+    elif operation == 'account_create_operation':
+        return account_create_operation_count_day
+    elif operation == 'transfer_from_savings_operation':
+        return transfer_from_savings_operation_count_day
+    elif operation == 'transfer_to_savings_operation':
+        return transfer_to_savings_operation_count_day
+    elif operation == 'cancel_transfer_from_savings_operation':
+        return cancel_transfer_from_savings_operation_count_day
+    elif operation == 'witness_update_operation':
+        return witness_update_operation_count_day
+    elif operation == 'account_witness_proxy_operation':
+        return account_witness_proxy_operation_count_day
+    elif operation == 'custom_operation':
+        return custom_operation_count_day
+    elif operation == 'set_withdraw_vesting_route_operation':
+        return set_withdraw_vesting_route_operation_count_day
+    elif operation == 'recover_account_operation':
+        return recover_account_operation_count_day
+    elif operation == 'request_account_recovery_operation':
+        return request_account_recovery_operation_count_day
+    elif operation == 'convert_operation':
+        return convert_operation_count_day
+    elif operation == 'escrow_release_operation':
+        return escrow_release_operation_count_day
+    elif operation == 'escrow_transfer_operation':
+        return escrow_transfer_operation_count_day
+    elif operation == 'escrow_approve_operation':
+        return escrow_approve_operation_count_day
+    elif operation == 'change_recovery_account_operation':
+        return change_recovery_account_operation_count_day
+
+# return operation model for operation type
+def get_model_operation(operation):
+    if operation == 'votes':
+        return votes
+    elif operation == 'transfers':
+        return transfers
+    elif operation == 'claim_rewards':
+        return claim_rewards
+    elif operation == 'delegate_vesting_shares_operation':
+        return delegate_vesting_shares_operation
+    elif operation == 'custom_json_operation':
+        return custom_json_operation
+    elif operation == 'comment_operation':
+        return comment_operation
+    elif operation == 'comment_options_operation':
+        return comment_options_operation
+    elif operation == 'account_update_operation':
+        return account_update_operation
+    elif operation == 'delegate_vesting_shares_operation':
+        return delegate_vesting_shares_operation
+    elif operation == 'transfer_to_vesting_operation':
+        return transfer_to_vesting_operation
+    elif operation == 'account_witness_vote_operation':
+        return account_witness_vote_operation
+    elif operation == 'feed_publish_operation':
+        return feed_publish_operation
+    elif operation == 'limit_order_create_operation':
+        return limit_order_create_operation
+    elif operation == 'limit_order_cancel_operation':
+        return limit_order_cancel_operation
+    elif operation == 'delete_comment_operation':
+        return delete_comment_operation
+    elif operation == 'account_create_with_delegation_operation':
+        return account_create_with_delegation_operation
+    elif operation == 'withdraw_vesting_operation':
+        return withdraw_vesting_operation
+    elif operation == 'account_create_operation':
+        return account_create_operation
+    elif operation == 'transfer_from_savings_operation':
+        return transfer_from_savings_operation
+    elif operation == 'transfer_to_savings_operation':
+        return transfer_to_savings_operation
+    elif operation == 'cancel_transfer_from_savings_operation':
+        return cancel_transfer_from_savings_operation
+    elif operation == 'witness_update_operation':
+        return witness_update_operation
+    elif operation == 'account_witness_proxy_operation':
+        return account_witness_proxy_operation
+    elif operation == 'custom_operation':
+        return custom_operation
+    elif operation == 'set_withdraw_vesting_route_operation':
+        return set_withdraw_vesting_route_operation
+    elif operation == 'recover_account_operation':
+        return recover_account_operation
+    elif operation == 'request_account_recovery_operation':
+        return request_account_recovery_operation
+    elif operation == 'convert_operation':
+        return convert_operation
+    elif operation == 'escrow_release_operation':
+        return escrow_release_operation
+    elif operation == 'escrow_transfer_operation':
+        return escrow_transfer_operation
+    elif operation == 'escrow_approve_operation':
+        return escrow_approve_operation
+    elif operation == 'change_recovery_account_operation':
+        return change_recovery_account_operation
+
+# API for count chart data
+class CountData(APIView):
     # Unused user authentication classes
     authentication_classes = []
     permission_classes = []
 
     def get(self, request, format=None, *args, **kwargs):
-        # get resolution and period
+        # get resolution, period and operation type
         delta = kwargs['delta']
         period = kwargs['period']
+        operation = kwargs['type']
         end = datetime.now()
 
-        # retrieve correct model
-        if delta == 'minute':
-            self.model = votes_count_minute
-        elif delta == 'hour':
-            self.model = votes_count_hour
-        elif delta == 'day':
-            self.model = votes_count_day
+        # get operation count model
+        self.model = get_model_count(operation)
 
         # calculate start
         start = get_start_day(period, end)
@@ -70,105 +198,6 @@ class VotesCountData(APIView):
         # datastruct for response
         data = {
             "label": '# of Votes',
-            "labels": x,
-            "data": y,
-        }
-
-        return Response(data)
-
-class TransfersCountData(APIView):
-    # Unused user authentication classes
-    authentication_classes = []
-    permission_classes = []
-
-    def get(self, request, format=None, *args, **kwargs):
-        # get resolution and period
-        delta = kwargs['delta']
-        period = kwargs['period']
-        end = datetime.now()
-
-        # retrieve correct model
-        if delta == 'minute':
-            self.model = transfers_count_minute
-            start = end - timedelta(hours=1)
-        elif delta == 'hour':
-            self.model = transfers_count_hour
-            start = end - timedelta(days=14)
-        elif delta == 'day':
-            self.model = transfers_count_day
-            start = end - timedelta(days=60)
-
-        # calculate start
-        start = get_start_day(period, end)
-
-        # ALL or specific period
-        if start:
-            ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
-        else:
-            ticker = self.model.objects.all().order_by('timestamp')
-        serializer = TransfersCount(ticker, many=True)
-
-        x = []
-        y = []
-
-        # Omit last result, append data into lists
-        for row in serializer.data[:-1] :
-            x.append(row['timestamp'])
-            y.append(row['count'])
-
-        # datastruct for response
-        data = {
-            "label": '# of Transfers',
-            "labels": x,
-            "data": y,
-        }
-
-        return Response(data)
-
-class ClaimRewardsCountData(APIView):
-    # Unused user authentication classes
-    authentication_classes = []
-    permission_classes = []
-
-    def get(self, request, format=None, *args, **kwargs):
-        # get resolution and period
-        delta = kwargs['delta']
-        period = kwargs['period']
-        end = datetime.now()
-
-        # retrieve correct model
-        if delta == 'minute':
-            self.model = claim_rewards_count_minute
-            start = end - timedelta(hours=1)
-        elif delta == 'hour':
-            self.model = claim_rewards_count_hour
-            start = end - timedelta(days=7)
-        elif delta == 'day':
-            self.model = claim_rewards_count_day
-            start = end - timedelta(days=60)
-
-        # calculate start
-        start = get_start_day(period, end)
-
-
-        # ALL or specific period
-        if start:
-            ticker = self.model.objects.filter(timestamp__range=(start, end)).order_by('timestamp')
-        else:
-            ticker = self.model.objects.all().order_by('timestamp')
-        serializer = TransfersCount(ticker, many=True)
-        
-        x = []
-        y = []
-
-        # Omit last result, append data into lists
-        for row in serializer.data[:-1]:
-            x.append(row['timestamp'])
-            y.append(row['count'])
-
-        # datastruct for response
-        data = {
-            "label": '# of Claim rewards',
             "labels": x,
             "data": y,
         }
@@ -202,12 +231,7 @@ class GeneralStats(APIView):
         operation = kwargs['operation']
 
         # retrieve correct model 
-        if operation == 'votes':
-            self.model = votes
-        elif operation == 'transfers':
-            self.model = transfers
-        elif operation == 'claim_rewards':
-            self.model = claim_rewards
+        self.model = get_model_operation(operation)
 
         # timne period
         end = datetime.now()
@@ -230,13 +254,30 @@ class GeneralStats(APIView):
         ticker = self.model.objects.all().order_by('-block_num')[:1]
         block = Blocks(ticker, many=True)
 
+        # filter for 0 values
+        if previous_count == 0:
+            delta = 'NaN'
+        else:
+            delta = '{:.2f}'.format((count-previous_count)/previous_count*100)
+
+        if count_30d == 0:
+            delta_30d = 'NaN'
+        else:
+            delta_30d = '{:.2f}'.format((count-count_30d)/count_30d*100)
+        
+        if count_365d == 0:
+            delta_365d = 'NaN'
+        else:
+            delta_365d = '{:.2f}'.format((count-count_365d)/count_365d*100)
+
+
         # response datastruct
         data = {
             "operations": count,
             "block_num": block.data,
-            "delta": '{:.2f}'.format((count-previous_count)/previous_count*100),
-            "delta_30d": '{:.2f}'.format((count-count_30d)/count_30d*100),
-            "delta_365d": '{:.2f}'.format((count-count_365d)/count_365d*100),
+            "delta": delta,
+            "delta_30d": delta_30d,
+            "delta_365d": delta_365d,
         }
 
         return Response(data)

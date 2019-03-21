@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block stats %}
+<!-- Chart canvas -->
+<div id="chart_canvas"><canvas id="chart" width="400" height="200"></canvas></div>
+
+<script>
+    $(document).ready(function(){
+
+        set_cookies();
+
+        // Use path to set endpoint for chart
+        let pathname = window.location.pathname;
+        let endpoint = '/api' + pathname + '/'  + Cookies.get('chart') + '/' + Cookies.get('period');
+
+        // Retrieve and plot chart
+        get_graph_data(endpoint); 
+
+        //var table = 'api/table/votes/' + Cookies.get('analytics') + '/' + Cookies.get('table_period');
+        //get_table(table);
+    });
+</script>
+{% endblock stats %}
