@@ -48,7 +48,7 @@ function plot_new_graph(data) {
     // Create chart instance
     var chart = am4core.create("chartdiv", am4charts.XYChart);
 
-    //chart.data = get_graph_data(endpoint);
+    // Set chart data
     chart.data= data;
 
     // Create axes
