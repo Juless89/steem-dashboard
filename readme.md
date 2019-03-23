@@ -103,7 +103,7 @@ python main.py
 * [Django Framework](https://github.com/django/django) - The web framework used
 * [Django REST Framework](https://github.com/django/django) - The REST framework used
 * [Bootstrap](https://getbootstrap.com/) - HTML/CSS Framework
-* [Charts.js](https://www.chartjs.org/) - Javascript charts library
+* [amCharts](https://www.amcharts.com) - Javascript charts library
 
 
 ## Versioning
