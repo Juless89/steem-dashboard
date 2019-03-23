@@ -1,11 +1,21 @@
-from operations_account import *
-from operations_comment import *
-from operations_custom import *
-from operations_escrow import *
-from operations_orderbook import *
-from operations_vote import *
-from operations_wallet import *
-from operations_witness import *
+from operations_account import Account_create_with_delegation_operation, \
+    Account_create_operation, Account_update_operation, \
+    Account_witness_vote_operation, Recover_account_operation, \
+    Account_witness_proxy_operation, Request_account_recovery_operation, \
+    Change_recovery_account_operation
+from operations_comment import Comment_operation, Comment_options_operation, \
+    Delete_comment_operation
+from operations_custom import Custom_operation, Custom_json_operation
+from operations_escrow import Escrow_release_operation, Escrow_approve_operation, \
+    Escrow_transfer_operation
+from operations_orderbook import Limit_order_create_operation, Limit_order_cancel_operation
+from operations_vote import Votes
+from operations_wallet import Convert_operation, Delegate_vesting_shares_operation, \
+    Transfers, Transfer_from_savings_operation, Transfer_to_savings_operation, \
+    Transfer_to_vesting_operation, Cancel_transfer_from_savings_operation, \
+    Set_withdraw_vesting_route_operation, Withdraw_vesting_operation, \
+    Claim_rewards
+from operations_witness import Witness_update_operation, Feed_publish_operation
 from steem_node import Node
 
 from database import Database

@@ -3,162 +3,99 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from .models import *
-from .serializers import *
+from .serializers import VotesCount, VotesSum, Blocks
 
 from datetime import datetime, timedelta
 
 import json
 
-# convert string to time delta
 def get_start_day(period, end):
-    if period == 'ALL':
-        return None
-    if period == '30D':
-        return end - timedelta(days=30)
-    elif period == '90D':
-        return end - timedelta(days=90)
-    elif period == '1Y':
-        return end - timedelta(days=365)
-    elif period == '7D':
-        return end - timedelta(days=7)
-    elif period == '24H':
-        return end - timedelta(days=1)
-    elif period == '12H':
-        return end - timedelta(hours=12)
-    elif period == '1H':
-        return end - timedelta(hours=1)
+    switcher = {
+        "ALL": None,
+        "30D": end - timedelta(days=30),
+        "90D": end - timedelta(days=90),
+        "1Y": end - timedelta(days=365),
+        "7D": end - timedelta(days=7),
+        "24H": end - timedelta(days=1),
+        "12H": end - timedelta(hours=12),
+        "1H": end - timedelta(hours=1),
+    }
+    return switcher.get(period, "Invalid period")
 
 # return count model for operation type
 def get_model_count(operation):
-    if operation == 'votes':
-        return votes_count_day
-    elif operation == 'transfers':
-        return transfers_count_day
-    elif operation == 'claim_rewards':
-        return claim_rewards_count_day
-    elif operation == 'delegate_vesting_shares_operation':
-        return delegate_vesting_shares_operation_count_day
-    elif operation == 'custom_json_operation':
-        return custom_json_operation_count_day
-    elif operation == 'comment_operation':
-        return comment_operation_count_day
-    elif operation == 'comment_options_operation':
-        return comment_options_operation_count_day
-    elif operation == 'account_update_operation':
-        return account_update_operation_count_day
-    elif operation == 'transfer_to_vesting_operation':
-        return transfer_to_vesting_operation_count_day
-    elif operation == 'account_witness_vote_operation':
-        return account_witness_vote_operation_count_day
-    elif operation == 'feed_publish_operation':
-        return feed_publish_operation_count_day
-    elif operation == 'limit_order_create_operation':
-        return limit_order_create_operation_count_day
-    elif operation == 'limit_order_cancel_operation':
-        return limit_order_cancel_operation_count_day
-    elif operation == 'delete_comment_operation':
-        return delete_comment_operation_count_day
-    elif operation == 'account_create_with_delegation_operation':
-        return account_create_with_delegation_operation_count_day
-    elif operation == 'withdraw_vesting_operation':
-        return withdraw_vesting_operation_count_day
-    elif operation == 'account_create_operation':
-        return account_create_operation_count_day
-    elif operation == 'transfer_from_savings_operation':
-        return transfer_from_savings_operation_count_day
-    elif operation == 'transfer_to_savings_operation':
-        return transfer_to_savings_operation_count_day
-    elif operation == 'cancel_transfer_from_savings_operation':
-        return cancel_transfer_from_savings_operation_count_day
-    elif operation == 'witness_update_operation':
-        return witness_update_operation_count_day
-    elif operation == 'account_witness_proxy_operation':
-        return account_witness_proxy_operation_count_day
-    elif operation == 'custom_operation':
-        return custom_operation_count_day
-    elif operation == 'set_withdraw_vesting_route_operation':
-        return set_withdraw_vesting_route_operation_count_day
-    elif operation == 'recover_account_operation':
-        return recover_account_operation_count_day
-    elif operation == 'request_account_recovery_operation':
-        return request_account_recovery_operation_count_day
-    elif operation == 'convert_operation':
-        return convert_operation_count_day
-    elif operation == 'escrow_release_operation':
-        return escrow_release_operation_count_day
-    elif operation == 'escrow_transfer_operation':
-        return escrow_transfer_operation_count_day
-    elif operation == 'escrow_approve_operation':
-        return escrow_approve_operation_count_day
-    elif operation == 'change_recovery_account_operation':
-        return change_recovery_account_operation_count_day
+    switcher = {
+        "votes": votes_count_day,
+        "transfers": transfers_count_day,
+        "claim_rewards": claim_rewards_count_day,
+        "delegate_vesting_shares_operation": delegate_vesting_shares_operation_count_day,
+        "custom_json_operation": custom_json_operation_count_day,
+        "comment_operation": comment_operation_count_day,
+        "comment_options_operation": comment_options_operation_count_day,
+        "account_update_operation": account_update_operation_count_day,
+        "transfer_to_vesting_operation": transfer_to_vesting_operation_count_day,
+        "account_witness_vote_operation": account_witness_vote_operation_count_day,
+        "feed_publish_operation": feed_publish_operation_count_day,
+        "limit_order_create_operation": limit_order_create_operation_count_day,
+        "limit_order_cancel_operation": limit_order_cancel_operation_count_day,
+        "delete_comment_operation": delete_comment_operation_count_day,
+        "account_create_with_delegation_operation": account_create_with_delegation_operation_count_day,
+        "withdraw_vesting_operation": withdraw_vesting_operation_count_day,
+        "account_create_operation": account_create_operation_count_day,
+        "transfer_from_savings_operation": transfer_from_savings_operation_count_day,
+        "transfer_to_savings_operation": transfer_to_savings_operation_count_day,
+        "cancel_transfer_from_savings_operation": cancel_transfer_from_savings_operation_count_day,
+        "witness_update_operation": witness_update_operation_count_day,
+        "account_witness_proxy_operation": account_witness_proxy_operation_count_day,
+        "custom_operation": custom_operation_count_day,
+        "set_withdraw_vesting_route_operation": set_withdraw_vesting_route_operation_count_day,
+        "recover_account_operation": recover_account_operation_count_day,
+        "request_account_recovery_operation": request_account_recovery_operation_count_day,
+        "convert_operation": convert_operation_count_day,
+        "escrow_release_operation": escrow_release_operation_count_day,
+        "escrow_transfer_operation": escrow_transfer_operation_count_day,
+        "escrow_approve_operation": escrow_approve_operation_count_day,
+        "change_recovery_account_operation": change_recovery_account_operation_count_day,
+    }
+    return switcher.get(operation, "Invalid operation")
 
 # return operation model for operation type
 def get_model_operation(operation):
-    if operation == 'votes':
-        return votes
-    elif operation == 'transfers':
-        return transfers
-    elif operation == 'claim_rewards':
-        return claim_rewards
-    elif operation == 'delegate_vesting_shares_operation':
-        return delegate_vesting_shares_operation
-    elif operation == 'custom_json_operation':
-        return custom_json_operation
-    elif operation == 'comment_operation':
-        return comment_operation
-    elif operation == 'comment_options_operation':
-        return comment_options_operation
-    elif operation == 'account_update_operation':
-        return account_update_operation
-    elif operation == 'delegate_vesting_shares_operation':
-        return delegate_vesting_shares_operation
-    elif operation == 'transfer_to_vesting_operation':
-        return transfer_to_vesting_operation
-    elif operation == 'account_witness_vote_operation':
-        return account_witness_vote_operation
-    elif operation == 'feed_publish_operation':
-        return feed_publish_operation
-    elif operation == 'limit_order_create_operation':
-        return limit_order_create_operation
-    elif operation == 'limit_order_cancel_operation':
-        return limit_order_cancel_operation
-    elif operation == 'delete_comment_operation':
-        return delete_comment_operation
-    elif operation == 'account_create_with_delegation_operation':
-        return account_create_with_delegation_operation
-    elif operation == 'withdraw_vesting_operation':
-        return withdraw_vesting_operation
-    elif operation == 'account_create_operation':
-        return account_create_operation
-    elif operation == 'transfer_from_savings_operation':
-        return transfer_from_savings_operation
-    elif operation == 'transfer_to_savings_operation':
-        return transfer_to_savings_operation
-    elif operation == 'cancel_transfer_from_savings_operation':
-        return cancel_transfer_from_savings_operation
-    elif operation == 'witness_update_operation':
-        return witness_update_operation
-    elif operation == 'account_witness_proxy_operation':
-        return account_witness_proxy_operation
-    elif operation == 'custom_operation':
-        return custom_operation
-    elif operation == 'set_withdraw_vesting_route_operation':
-        return set_withdraw_vesting_route_operation
-    elif operation == 'recover_account_operation':
-        return recover_account_operation
-    elif operation == 'request_account_recovery_operation':
-        return request_account_recovery_operation
-    elif operation == 'convert_operation':
-        return convert_operation
-    elif operation == 'escrow_release_operation':
-        return escrow_release_operation
-    elif operation == 'escrow_transfer_operation':
-        return escrow_transfer_operation
-    elif operation == 'escrow_approve_operation':
-        return escrow_approve_operation
-    elif operation == 'change_recovery_account_operation':
-        return change_recovery_account_operation
+    switcher = {
+        "votes": votes,
+        "transfers": transfers,
+        "claim_rewards": claim_rewards,
+        "delegate_vesting_shares_operation": delegate_vesting_shares_operation,
+        "custom_json_operation": custom_json_operation,
+        "comment_operation": comment_operation,
+        "comment_options_operation": comment_options_operation,
+        "account_update_operation": account_update_operation,
+        "transfer_to_vesting_operation": transfer_to_vesting_operation,
+        "account_witness_vote_operation": account_witness_vote_operation,
+        "feed_publish_operation": feed_publish_operation,
+        "limit_order_create_operation": limit_order_create_operation,
+        "limit_order_cancel_operation": limit_order_cancel_operation,
+        "delete_comment_operation": delete_comment_operation,
+        "account_create_with_delegation_operation": account_create_with_delegation_operation,
+        "withdraw_vesting_operation": withdraw_vesting_operation,
+        "account_create_operation": account_create_operation,
+        "transfer_from_savings_operation": transfer_from_savings_operation,
+        "transfer_to_savings_operation": transfer_to_savings_operation,
+        "cancel_transfer_from_savings_operation": cancel_transfer_from_savings_operation,
+        "witness_update_operation": witness_update_operation,
+        "account_witness_proxy_operation": account_witness_proxy_operation,
+        "custom_operation": custom_operation,
+        "set_withdraw_vesting_route_operation": set_withdraw_vesting_route_operation,
+        "recover_account_operation": recover_account_operation,
+        "request_account_recovery_operation": request_account_recovery_operation,
+        "convert_operation": convert_operation,
+        "escrow_release_operation": escrow_release_operation,
+        "escrow_transfer_operation": escrow_transfer_operation,
+        "escrow_approve_operation": escrow_approve_operation,
+        "change_recovery_account_operation": change_recovery_account_operation,
+    }
+    return switcher.get(operation, "Invalid operation")
+
 
 # API for count chart data
 class CountData(APIView):

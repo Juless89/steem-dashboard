@@ -100,7 +100,7 @@ function fill_table(data) {
         row.forEach((cell) => {
             const td = document.createElement("td");
             // Add a link and @ for steem user accounts
-            if (x == 1) {
+            if (x === 1) {
                 const a = document.createElement("a");
                 a.textContent = '@' + cell;
                 a.target = "_blank"
