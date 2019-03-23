@@ -1,4 +1,4 @@
-# SteemChain v1.3.0
+# SteemChain v1.4.0
 
 Dashboard application for analysing and charting transactions and operations from the STEEM Blockchain.
 
@@ -66,6 +66,7 @@ Settings.cnf should be as follow:
 database = steem_dashboard
 user = 
 password = 
+host = localhost
 ```
 
 When everything is done correctly the models can be migrated

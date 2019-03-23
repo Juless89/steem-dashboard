@@ -1,3 +1,17 @@
+/*
+ * Chart
+ */
+
+
+#chartdiv {
+  width: 99%;
+  height: 500px;
+}
+
+/*
+ * Body
+ */
+
 body {
   font-size: .875rem;
 }

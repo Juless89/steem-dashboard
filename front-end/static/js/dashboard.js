@@ -1,50 +1,3 @@
-// Create new chart. First remove to prevent data mutations as all charts are plotted
-// to the same canvas.
-function plot_graph(data){
-    // canvas
-    $("canvas#chart").remove();
-    $("#chart_canvas").append('<canvas id="chart" width="400" height="150"></canvas>');
-
-    // new chart
-    var ctx = document.getElementById("chart").getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: data.labels,
-            datasets: [{
-                label: data.label,
-                data: data.data,
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255,99,132,1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero:true
-                    }
-                }]
-            }
-        }
-    });
-};
-
 // Get the current settings from the user to highlight
 // the corrent buttons.
 function active_buttons() {
@@ -79,13 +32,53 @@ function get_graph_data(endpoint) {
 
         // plot chart on success
         success: function(data){
-            plot_graph(data);
+            plot_new_graph(data);
         },
         error: function(error_data){
             console.log(error_data)
         }
     });
 };
+
+function plot_new_graph(data) {
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    // Create chart instance
+    var chart = am4core.create("chartdiv", am4charts.XYChart);
+
+    //chart.data = get_graph_data(endpoint);
+    chart.data= data;
+
+    // Create axes
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 50;
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+
+    // Create series
+    var series = chart.series.push(new am4charts.LineSeries());
+    series.dataFields.valueY = "count";
+    series.dataFields.dateX = "date";
+    series.strokeWidth = 2;
+    series.fillOpacity = 0.3;
+    series.minBulletDistance = 10;
+    series.tooltipText = "{valueY}";
+    series.tooltip.pointerOrientation = "vertical";
+    series.tooltip.background.cornerRadius = 20;
+    series.tooltip.background.fillOpacity = 0.5;
+    series.tooltip.label.padding(12,12,12,12)
+
+    // Add scrollbar
+    chart.scrollbarX = new am4charts.XYChartScrollbar();
+    chart.scrollbarX.series.push(series);
+
+    // Add cursor
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.xAxis = dateAxis;
+    chart.cursor.snapToSeries = series;
+}
 
 // fill table
 function fill_table(data) {

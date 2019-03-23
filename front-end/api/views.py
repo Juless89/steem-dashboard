@@ -186,21 +186,15 @@ class CountData(APIView):
             ticker = self.model.objects.all().order_by('timestamp')
         serializer = VotesCount(ticker, many=True)
 
-
-        x = []
-        y = []
+        # datastruct for response
+        data = []
 
         # Omit last result, append data into lists
         for row in serializer.data[:-1]:
-            x.append(row['timestamp'])
-            y.append(row['count'])
-
-        # datastruct for response
-        data = {
-            "label": '# of operations',
-            "labels": x,
-            "data": y,
-        }
+            data.append({
+                "date": row['timestamp'],
+                "count": row['count'],
+            })
 
         return Response(data)
 
